@@ -2,6 +2,8 @@ import { Entity, Player, world ,system} from "@minecraft/server"
 import OperatorLine from "./lineOperator";
 import OperatorResult from "./OperatorResult";
 import BtsOperator from "./Operator";
+import OperatorUndo from "./undoOperator";
+import OperatorRedo from "./redoOperator";
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
     const result = {
@@ -22,6 +24,8 @@ function attachOperatorItemUseListener() {
         let operator: BtsOperator;
         switch (args.itemStack.typeId) {
             case "bets:operator_line": operator = new OperatorLine(); break;
+            case "bets:operator_undo": operator = new OperatorUndo(); break;
+            case "bets:operator_redo": operator = new OperatorRedo(); break;
             default: return;
         }
         system.run(()=>{
