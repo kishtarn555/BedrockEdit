@@ -10,6 +10,12 @@
 		},
 		"bets_wand": {
 			"textures": "textures/items/wand"
+		},
+		"bets_blue_picker": {
+			"textures": "textures/items/blue_picker"
+		},
+		"bets_red_picker": {
+			"textures": "textures/items/red_picker"
 		}
 	}
 }
