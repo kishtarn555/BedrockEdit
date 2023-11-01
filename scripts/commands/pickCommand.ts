@@ -4,4 +4,4 @@ import { CommandResponse } from "./syntaxHelper";
 
 
 
-export { fillScriptEventCommand }
+export { }
