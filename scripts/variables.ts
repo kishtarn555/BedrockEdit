@@ -1,4 +1,4 @@
-import { Vector3, BlockPermutation } from "@minecraft/server"
+import { Vector3, BlockPermutation, world } from "@minecraft/server"
 
 let coordinates1:Vector3|undefined
 let coordinates2:Vector3|undefined
@@ -10,9 +10,11 @@ class BetsCoords {
 
     static setPos1(location:Vector3) {
         coordinates1 = location;
+        world.sendMessage(`[§9Bets§f] §bPos1§f set to §a ${coordinates1.x.toFixed(2)} ${coordinates1.y.toFixed(2)} ${coordinates1.z.toFixed(2)} `)
     }
     static setPos2(location:Vector3) {
         coordinates2 = location;
+        world.sendMessage(`[§9Bets§f] §bPos2§f set to §a ${coordinates2.x.toFixed(2)} ${coordinates2.y.toFixed(2)} ${coordinates2.z.toFixed(2)} `)
     }
 
     
@@ -33,6 +35,8 @@ class BetsBlocks {
 
     static setBlock1(block:BlockPermutation) {
         block1 = block;
+        world.sendMessage(`[§9Bets§f] §bBlock1§f set to §a ${block1} `)
+
     }
 
     static setBlock2(block:BlockPermutation) {

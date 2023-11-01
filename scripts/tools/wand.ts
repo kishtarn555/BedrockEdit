@@ -1,6 +1,6 @@
 import {world, ScriptEventCommandMessageAfterEvent, Player, system, Direction, Vector3} from "@minecraft/server"
-import { BetsCoords } from "./variables";
-import { CommandResponse } from "./commands/syntaxHelper";
+import { BetsCoords } from "../variables";
+import { CommandResponse } from "../commands/syntaxHelper";
 
  
 let wandNextUse = -1

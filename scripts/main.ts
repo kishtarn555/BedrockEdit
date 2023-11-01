@@ -1,6 +1,7 @@
 import { world, system } from "@minecraft/server";
 import attachScriptEventsWatcher from "./myscriptevents"
-import {attachWandListener} from "./wand"
+import {attachWandListener} from "./tools/wand"
+import {attachPickerItemUse} from "./tools/pick"
 import renderSelection from "./particle_visualizer"
 
 const START_TICK = 100;
@@ -18,4 +19,5 @@ function mainTick() {
 
 system.run(mainTick);
 attachScriptEventsWatcher();
+attachPickerItemUse();
 attachWandListener();

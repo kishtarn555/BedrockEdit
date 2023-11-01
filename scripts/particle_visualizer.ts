@@ -10,11 +10,11 @@ export default function renderSelection() {
         
         let pos2Moolang =  new MolangVariableMap()
         let pos1Moolang =  new MolangVariableMap()
-        pos1Moolang.setFloat("scale", 0.3);    
+        pos1Moolang.setFloat("scale", 0.4);    
         pos1Moolang.setFloat("offset_x", 0);
         pos1Moolang.setFloat("offset_y", 16);
 
-        pos2Moolang.setFloat("scale", 0.3);    
+        pos2Moolang.setFloat("scale", 0.4);    
         pos2Moolang.setFloat("offset_x", 16);
         pos2Moolang.setFloat("offset_y", 16);
         let overworld = world.getDimension("overworld");
