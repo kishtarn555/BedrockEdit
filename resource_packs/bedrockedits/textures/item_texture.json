@@ -1,0 +1,15 @@
+{
+	"resource_pack_name": "BedrocKEdits",
+	"texture_name": "atlas.items",
+	"texture_data": {
+		"bets_red_wand": {
+			"textures": "textures/items/red_wand"
+		},
+		"bets_blue_wand": {
+			"textures": "textures/items/blue_wand"
+		},
+		"bets_wand": {
+			"textures": "textures/items/wand"
+		}
+	}
+}

@@ -1,9 +1,9 @@
 {
   "format_version": 2,
   "header": {
-    "name": "My script behavior pack",
-    "description": "My behavior pack description",
-    "uuid": "14e467b4-e3aa-49d3-8352-f8439fd7b2ee",
+    "name": "Bedrock Edits",
+    "description": "Provides tool for map making",
+    "uuid": "88fc03a3-72a9-40cc-b3a9-f48711df69b5",
     "version": [0, 0, 1],
     "min_engine_version": [1, 20, 30]
   },
@@ -12,15 +12,21 @@
       "description": "Script resources",
       "language": "javascript",
       "type": "script",
-      "uuid": "7c7e693f-99f4-41a9-95e0-1f57b37e1e12",
+      "uuid": "34f7b70d-8a43-4590-8b9f-bd0f8338426a",
       "version": [0, 0, 1],
       "entry": "scripts/main.js"
-    }
+    },
+    {
+      "description": "Debug items",
+      "type": "data",
+      "uuid": "724c8b52-90f3-459b-9499-0d2de89ff74c",
+      "version": [1, 0, 0]
+    }  
   ],
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": "1.5.0"
+      "version": "1.6.0"
     }
   ]
 }
