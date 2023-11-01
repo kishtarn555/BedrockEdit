@@ -41,6 +41,7 @@ class BetsBlocks {
 
     static setBlock2(block:BlockPermutation) {
         block2 = block;
+        world.sendMessage(`[§9Bets§f] §bBlock2§f set to §a ${block2} `)
     }
     
     static getBlock1() {
