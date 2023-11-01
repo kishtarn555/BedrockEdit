@@ -1,5 +1,5 @@
 import {world, ScriptEventCommandMessageAfterEvent, Player, system, Direction, Vector3} from "@minecraft/server"
-import { setPos1,setPos2 } from "./commands/posCommands";
+import { BetsCoords } from "./variables";
 import { CommandResponse } from "./commands/syntaxHelper";
 
  
@@ -42,11 +42,11 @@ function attachWandListener() {
             z:location.z + offset.z
         }
         if (arg.itemStack?.typeId==="bets:wand_red") {
-            setPos2(offset);
+            BetsCoords.setPos2(offset);
         } else if (arg.itemStack?.typeId==="bets:wand_blue") {
-            setPos1(offset);
+            BetsCoords.setPos1(offset);
         }  else {        
-            setPos2(location)
+            BetsCoords.setPos2(location)
         }
     });
 
@@ -60,9 +60,9 @@ function attachWandListener() {
         if (system.currentTick < wandNextBreak) return;
         wandNextBreak = system.currentTick+WAND_COOLDOWN;
         if (arg.itemStack?.typeId==="bets:wand" || arg.itemStack?.typeId==="bets:wand_blue") {
-            setPos1(arg.block.location)
+            BetsCoords.setPos1(arg.block.location)
         } else if (arg.itemStack?.typeId==="bets:wand_red") {
-            setPos2(arg.block.location)
+            BetsCoords.setPos2(arg.block.location)
         }
     });
 

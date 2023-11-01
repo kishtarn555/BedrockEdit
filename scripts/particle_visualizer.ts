@@ -1,11 +1,11 @@
 import {world, MolangVariableMap} from "@minecraft/server"
-import { arePositionsValid, getPos1, getPos2 } from "./commands/posCommands"
+import { BetsCoords } from "./variables"
 
 export default function renderSelection() {
     //FIXME: Deal with outside blocks
     try {
-        let tpos1 = getPos1()
-        let tpos2 = getPos2()
+        let tpos1 = BetsCoords.getPos1()
+        let tpos2 = BetsCoords.getPos2()
         
         
         let pos2Moolang =  new MolangVariableMap()
@@ -41,9 +41,9 @@ export default function renderSelection() {
                 pos2Moolang
             );
         }
-        if (!arePositionsValid()) return;
-        let pos1 = getPos1()!;
-        let pos2 = getPos2()!;
+        if (!BetsCoords.arePositionsValid()) return;
+        let pos1 = BetsCoords.getPos1()!;
+        let pos2 = BetsCoords.getPos2()!;
 
         pos1 = {
             x:Math.floor(pos1.x)+0.5,
