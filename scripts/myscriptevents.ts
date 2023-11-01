@@ -9,6 +9,7 @@ import { pos1ScriptEvent, pos2ScriptEvent } from "./commands/posCommands";
 import { fillScriptEventCommand } from "./commands/fillCommand";
 import { CommandResponse } from "./commands/syntaxHelper";
 import { lineScriptEventCommand } from "./commands/lineCommand";
+import History from "./commits/history";
 
 function reportCommand(command:string,entity: Entity | undefined, response: CommandResponse) {
     const result = {
@@ -34,12 +35,14 @@ export default function attachScriptEventsWatcher() {
         }
         const parts: string[] = id.split(":");
         let command = parts[1];
-        let response: CommandResponse | undefined = undefined
+        let response: CommandResponse  = { commandStatus:"warning", message:"default response"};
         switch (command) {
             case "pos1": response = pos1ScriptEvent(event); break;
             case "pos2": response = pos2ScriptEvent(event); break;
             case "fill": response = fillScriptEventCommand(event); break;
             case "line": response = lineScriptEventCommand(event); break;
+            case "undo": History.Undo(); break;
+            case "redo": History.Redo(); break;
             default:
                 response = { commandStatus: "error", message: "Unknown command" };
                 break;

@@ -16,6 +16,15 @@
 		},
 		"bets_red_picker": {
 			"textures": "textures/items/red_picker"
+		},
+		"bets_line": {
+			"textures": "textures/items/bets_line"
+		},
+		"bets_redo": {
+			"textures": "textures/items/bets_redo"
+		},
+		"bets_undo": {
+			"textures": "textures/items/bets_undo"
 		}
 	}
 }

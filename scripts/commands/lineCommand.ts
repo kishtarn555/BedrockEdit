@@ -1,15 +1,22 @@
 import { world, BlockPermutation, CommandError, CommandResult, Dimension, ScriptEventCommandMessageAfterEvent, Vector3 } from "@minecraft/server";
-import { BetsCoords } from "../variables";
+import { BetsCoords, BetsBlocks } from "../variables";
 import { CommandResponse } from "./syntaxHelper";
 
 import { plot3D } from "../BresenhamLine";
 
 
-function line(dimension: string, blockStatement: string): CommandResponse {
+function line(dimension: string): CommandResponse {
     if (!BetsCoords.arePositionsValid()) {
         return {
             commandStatus: "error",
             message: "Positions are not valid"
+        }
+
+    }
+    if (!BetsBlocks.isBlock1Valid()) {
+        return {
+            commandStatus: "error",
+            message: "No block picked"
         }
 
     }
@@ -30,7 +37,8 @@ function line(dimension: string, blockStatement: string): CommandResponse {
 
         //NOTE: This might need a bump after fillBlocks is added
         for (const point of points) {
-            world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
+            // world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
+            world.getDimension(dimension).getBlock(point)?.setPermutation(BetsBlocks.getBlock1()!);
         }
         return {
             commandStatus: "successful",
@@ -62,14 +70,8 @@ function line(dimension: string, blockStatement: string): CommandResponse {
 
 function lineScriptEventCommand(event: ScriptEventCommandMessageAfterEvent): CommandResponse {
     let dimension = event.initiator?.dimension ?? event.sourceBlock?.dimension ?? event.sourceEntity?.dimension;
-    if (event.message.length === 0) {
-        return {
-            commandStatus: "error",
-            message: "fill command requieres the block"
-
-        }
-    }
-    return line(dimension!.id, event.message);
+    
+    return line(dimension!.id);
 }
 
 export { lineScriptEventCommand }

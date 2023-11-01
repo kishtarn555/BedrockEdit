@@ -51,6 +51,23 @@ function attachWandListener() {
     });
 
     
+    world.beforeEvents.itemUse.subscribe((arg)=> {
+        if (!arg.itemStack?.typeId.startsWith("bets:wand")) {
+            return;
+        }
+               
+        arg.cancel = true;
+        if (system.currentTick < wandNextUse) return;
+        wandNextUse = system.currentTick+WAND_COOLDOWN;
+        let location = arg.source.location;
+        
+        if (arg.itemStack?.typeId==="bets:wand_red") {
+            BetsCoords.setPos2(location);
+        } else if (arg.itemStack?.typeId==="bets:wand_blue") {
+            BetsCoords.setPos1(location);
+        }
+    });
+
     world.beforeEvents.playerBreakBlock.subscribe((arg)=> {
         if (!arg.itemStack?.typeId.startsWith("bets:wand")) {
             return;
