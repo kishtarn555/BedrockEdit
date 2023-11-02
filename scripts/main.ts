@@ -19,7 +19,7 @@ function mainTick() {
 }
 
 system.run(mainTick);
-attachScriptEventsWatcher();
+//attachScriptEventsWatcher();
 attachPickerItemUse();
 attachWandListener();
 attachOperatorItemUseListener();
