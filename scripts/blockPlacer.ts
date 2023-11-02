@@ -2,20 +2,20 @@ import { Block, BlockPermutation } from "@minecraft/server";
 import { BetsBlocks } from "./variables";
 
 export default class BlockPlacer {
-    operationType:BlockPlacingType = BlockPlacingType.replaceExaclty
+    operationMode:BlockPlacingMode = BlockPlacingMode.replaceExaclty
 
 
     setBlockPermutation(block:Block, primary:BlockPermutation, secondary?:BlockPermutation) {
-        switch (this.operationType) {
-            case BlockPlacingType.normal:
+        switch (this.operationMode) {
+            case BlockPlacingMode.normal:
                 block.setPermutation(primary);
                 break;
-            case BlockPlacingType.keep:
+            case BlockPlacingMode.keep:
                 if (block.isAir) {                    
                     block.setPermutation(primary);
                 }
                 break;
-            case BlockPlacingType.replaceExaclty:
+            case BlockPlacingMode.replaceExaclty:
                 if (secondary == null) {
                     throw new Error("Secondary block is not set");
                 }
@@ -34,7 +34,7 @@ export default class BlockPlacer {
 
 
 
-enum BlockPlacingType {
+enum BlockPlacingMode {
     normal, //Places blocks normally, independent of what replaces
     keep, //Only replaces air blocks
     replaceExaclty,
