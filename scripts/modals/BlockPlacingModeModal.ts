@@ -1,4 +1,7 @@
+import { Player } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
+import { BetsBlockPlacer } from "../variables";
+import { BlockPlacingMode } from "../blockPlacer";
 
 export default class BlockPlacingModeSelectionModal {
     modal: ModalFormData 
@@ -14,8 +17,16 @@ export default class BlockPlacingModeSelectionModal {
                     {translate:"bets.modal.block_placing_mode_selection.keep.name"},
                     {translate:"bets.modal.block_placing_mode_selection.replace_exactly.name"},
                     {translate:"bets.modal.block_placing_mode_selection.replace_loosely.name"},
-                ]
+                ],
+                BetsBlockPlacer.operationMode
             );
+    }
+
+    show(player:Player) {
+        this.modal.show(player).then(response=> {
+            let mode = response.formValues![0] as number
+            BetsBlockPlacer.operationMode = mode;
+        })
     }
 
 }
