@@ -1,4 +1,5 @@
 import { BlockPermutation, Dimension, Vector3 } from "@minecraft/server"
+import { BetsBlockPlacer, BetsBlocks } from "../variables"
 
 interface Change {
     dimension:Dimension
@@ -22,8 +23,12 @@ class Commit {
             previousState:dimension.getBlock(location)?.permutation, //NOTE: Does this need a clone (beta only as of 1/nov/2023)?
             nextState:blockPermutation
         }
-        this.changes.push(newChange)
-        dimension.getBlock(location)?.setPermutation(blockPermutation)
+        this.changes.push(newChange);
+        let block = dimension.getBlock(location);
+        if (block == null) {
+            return; //FIXME
+        }
+        BetsBlockPlacer.setBlockPermutation(block, BetsBlocks.getBlock1()!, BetsBlocks.getBlock2(),)
     }
 
 
