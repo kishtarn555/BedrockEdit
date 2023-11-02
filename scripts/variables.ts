@@ -48,7 +48,7 @@ class BetsCoords {
         return coordinates1 != null && coordinates2 != null;
     }
 
-    static getBlockBoundsArea() {
+    static getBlockBoundsLength() {
         if (!this.arePositionsValid()) {
             return;
         }
@@ -58,14 +58,15 @@ class BetsCoords {
         let xs = v1.x !== v2.x?2:1;  
         let ys = v1.y !== v2.y?2:1;  
         let zs = v1.z !== v2.z?2:1;
-        length += xs*ys+zs;  
+        length += xs*ys*zs;  
+        return length;
     }
 
     
     static isThereAValidWorkspace():boolean {
-        let length = this.getBlockBoundsArea();
+        let length = this.getBlockBoundsLength();
         if (length == null) {
-            return false
+            return false;
         }
         return length <= MAX_WORKSPACE_PERIMETER
 
