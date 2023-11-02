@@ -7,10 +7,17 @@ export default class OperatorUndo extends BtsOperator {
         
     }
     run(): OperatorResult {
-        History.Undo();
+        let commit = History.Undo();
+        if (commit == null) {
+            return {
+                status: "error",
+                message: `There's not operations to undo in History`
+            }
+        }
+        
         return {
-            status: "warning",
-            message: "Undone previous commit"
+            status: "success",
+            message: `Undone: ${commit.message} (${History.getLength()}/${History.getCapacity()}) `
         }
     
     }

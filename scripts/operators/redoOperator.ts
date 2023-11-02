@@ -7,11 +7,19 @@ export default class OperatorRedo extends BtsOperator {
         
     }
     run(): OperatorResult {
-        History.Redo();
-        return {
-            status: "warning",
-            message: "Redo previous commit"
+        let commit = History.Redo();
+        if (commit == null) {
+            return {
+                status: "error",
+                message: "There's not operations to redo in History"
+            }
         }
+        
+        return {
+            status: "success",
+            message: `Redone: ${commit.message} (${History.getLength()}/${History.getCapacity()})`
+        }
+    
     
     }
     

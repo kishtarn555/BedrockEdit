@@ -9,6 +9,12 @@ interface Change {
 
 class Commit {
     changes: Change[] = []
+    message:string
+
+    constructor (message:string) {
+        this.message =message
+    }
+
     setBlockPermutation(dimension:Dimension, location:Vector3, blockPermutation:BlockPermutation) {
         let newChange:Change = {
             dimension:dimension,

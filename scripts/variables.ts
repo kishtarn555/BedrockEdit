@@ -25,6 +25,24 @@ class BetsCoords {
         return coordinates2
     }
 
+    static getBlock1() :Vector3 | undefined{
+        if (coordinates1 == null) return;
+        return {
+            x:Math.floor(coordinates1.x),
+            y:Math.floor(coordinates1.y),
+            z:Math.floor(coordinates1.z)
+        }
+    }
+
+    static getBlock2() :Vector3 | undefined{
+        if (coordinates2 == null) return;
+        return {
+            x:Math.floor(coordinates2.x),
+            y:Math.floor(coordinates2.y),
+            z:Math.floor(coordinates2.z)
+        }
+    }
+
     static arePositionsValid() {
         return coordinates1 != null && coordinates2 != null;
     }

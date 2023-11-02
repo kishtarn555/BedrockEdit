@@ -28,19 +28,20 @@ export default class OperatorLine extends BtsOperator {
         //NOTE: when fillblocks is released, we might want to upgrade to it 
         let result: OperatorResult
         try {
-            let pos1: Vector3 = BetsCoords.getPos1()!
-            let pos2: Vector3 = BetsCoords.getPos2()!
+            let pos1: Vector3 = BetsCoords.getBlock1()!
+            let pos2: Vector3 = BetsCoords.getBlock1()!
     
             let points = plot3D(
-                Math.floor(pos1.x),
-                Math.floor(pos1.y),
-                Math.floor(pos1.z),
-                Math.floor(pos2.x),
-                Math.floor(pos2.y),
-                Math.floor(pos2.z),
+                pos1.x,
+                pos1.y,
+                pos1.z,
+                pos2.x,
+                pos2.y,
+                pos2.z,
             )
-            let commit:Commit=new  Commit();
-            //NOTE: This might need a bump after fillBlocks is added
+            let commit:Commit=new  Commit("Line operation");
+            
+            //NOTE: This might need a bump after setBlocks is added
             for (const point of points) {
                 // world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
                 //FIXME: Support multidimension
@@ -52,12 +53,14 @@ export default class OperatorLine extends BtsOperator {
             History.AddCommit(commit);
             return {
                 status: "success",
-                message: [Math.floor(pos1.x),
-                    Math.floor(pos1.y),
-                    Math.floor(pos1.z),
-                    Math.floor(pos2.x),
-                    Math.floor(pos2.y),
-                    Math.floor(pos2.z)].join(",")
+                message: [
+                    pos1.x,
+                    pos1.y,
+                    pos1.z,
+                    pos2.x,
+                    pos2.y,
+                    pos2.z
+                ].join(",")
             }
             
         } catch (error) {

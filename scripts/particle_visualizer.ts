@@ -3,7 +3,7 @@ import { BetsCoords } from "./variables"
 
 export default function renderSelection() {
     //FIXME: Deal with outside blocks
-    try {
+    
         let tpos1 = BetsCoords.getPos1()
         let tpos2 = BetsCoords.getPos2()
         
@@ -20,6 +20,7 @@ export default function renderSelection() {
         let overworld = world.getDimension("overworld");
         
         if (tpos1 != null) {
+            try {
             overworld.spawnParticle(
                 "bets:select_particle", 
                 {
@@ -29,8 +30,10 @@ export default function renderSelection() {
                 }, 
                 pos1Moolang
             );
+            } catch {}
         }
         if (tpos2 != null) {
+            try {
             overworld.spawnParticle(
                 "bets:select_particle", 
                 {
@@ -40,6 +43,7 @@ export default function renderSelection() {
                 }, 
                 pos2Moolang
             );
+            }catch {}
         }
         if (!BetsCoords.arePositionsValid()) return;
         let pos1 = BetsCoords.getPos1()!;
@@ -73,40 +77,40 @@ export default function renderSelection() {
         cornerMoolang.setFloat("offset_y", 0);
 
         for (let x = x1+1; x < x2; x++) {
-            overworld.spawnParticle("bets:select_particle", {x:x,y:y1,z:z1}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x,y:y1,z:z2}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x,y:y2,z:z1}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x,y:y2,z:z2}, moolang);
+            try {overworld.spawnParticle("bets:select_particle", {x:x,y:y1,z:z1}, moolang); } catch{}
+            try {overworld.spawnParticle("bets:select_particle", {x:x,y:y1,z:z2}, moolang); } catch {}
+            try {overworld.spawnParticle("bets:select_particle", {x:x,y:y2,z:z1}, moolang); } catch {}
+            try {overworld.spawnParticle("bets:select_particle", {x:x,y:y2,z:z2}, moolang); } catch {}
         }
         
         for (let y = y1+1; y < y2; y++) {
-            overworld.spawnParticle("bets:select_particle", {x:x1,y:y,z:z1}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x1,y:y,z:z2}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x2,y:y,z:z1}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x2,y:y,z:z2}, moolang);
+            try {overworld.spawnParticle("bets:select_particle", {x:x1,y:y,z:z1}, moolang); } catch {}
+            try {overworld.spawnParticle("bets:select_particle", {x:x1,y:y,z:z2}, moolang); } catch {}
+            try {overworld.spawnParticle("bets:select_particle", {x:x2,y:y,z:z1}, moolang); } catch {}
+            try {overworld.spawnParticle("bets:select_particle", {x:x2,y:y,z:z2}, moolang); } catch {}
         }
         
         for (let z = z1+1; z < z2; z++) {
-            overworld.spawnParticle("bets:select_particle", {x:x1,y:y1,z:z}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x2,y:y1,z:z}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x1,y:y2,z:z}, moolang);
-            overworld.spawnParticle("bets:select_particle", {x:x2,y:y2,z:z}, moolang);
+            try { overworld.spawnParticle("bets:select_particle", {x:x1,y:y1,z:z}, moolang); } catch {}
+            try { overworld.spawnParticle("bets:select_particle", {x:x2,y:y1,z:z}, moolang); } catch {}
+            try { overworld.spawnParticle("bets:select_particle", {x:x1,y:y2,z:z}, moolang); } catch {}
+            try { overworld.spawnParticle("bets:select_particle", {x:x2,y:y2,z:z}, moolang); } catch {}
         }
         if ([pos1.x !== pos2.x,pos1.y !== pos2.y,pos1.z !== pos2.z].filter(Boolean).length >= 2) {
             if (pos2.x !== pos1.x) {
-                overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos2.y,z:pos2.z}, cornerMoolang);
-                overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos1.y,z:pos1.z}, cornerMoolang);
+                try { overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos2.y,z:pos2.z}, cornerMoolang); } catch {}
+                try { overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos1.y,z:pos1.z}, cornerMoolang); } catch {}
             }
             if (pos2.y !== pos1.y) {
-                overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos1.y,z:pos2.z}, cornerMoolang);
-                overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos2.y,z:pos1.z}, cornerMoolang);
+                try { overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos1.y,z:pos2.z}, cornerMoolang); } catch {}
+                try { overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos2.y,z:pos1.z}, cornerMoolang); } catch {}
             }
             if (pos2.z !== pos1.z) {
-                overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos2.y,z:pos1.z}, cornerMoolang);
-                overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos1.y,z:pos2.z}, cornerMoolang);
+                try { overworld.spawnParticle("bets:select_particle", {x:pos2.x,y:pos2.y,z:pos1.z}, cornerMoolang); } catch {}
+                try { overworld.spawnParticle("bets:select_particle", {x:pos1.x,y:pos1.y,z:pos2.z}, cornerMoolang); } catch {}
             }
         }
-    } catch(error) {}
+    
     
     
    

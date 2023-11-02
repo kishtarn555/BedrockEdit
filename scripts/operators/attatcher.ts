@@ -4,6 +4,7 @@ import OperatorResult from "./OperatorResult";
 import BtsOperator from "./Operator";
 import OperatorUndo from "./undoOperator";
 import OperatorRedo from "./redoOperator";
+import OperatorFill from "./fillOperator";
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
     const result = {
@@ -11,7 +12,7 @@ function logOperator(command: string, player: Player, response: OperatorResult) 
         "error": "§c",
         "warning": "§e"
     }[response.status];
-    const message = `§9[${command}] ${result}${response.message} `;
+    const message = `[§9Bets§f] ${result}${response.message} `;
 
     player.sendMessage(message)
 
@@ -26,6 +27,7 @@ function attachOperatorItemUseListener() {
             case "bets:operator_line": operator = new OperatorLine(); break;
             case "bets:operator_undo": operator = new OperatorUndo(); break;
             case "bets:operator_redo": operator = new OperatorRedo(); break;
+            case "bets:operator_fill": operator = new OperatorFill(); break;
             default: return;
         }
         system.run(()=>{

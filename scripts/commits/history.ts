@@ -5,14 +5,14 @@ const UndoHistory:Commit[] = []
 
 const RedoHistory:Commit[] = []
 
-let MaxHistoryLength = 2000;
+let MaxHistoryLength = 20000;
 let UndoLength=0;
 export default class History {
 
     static AddCommit(commit:Commit) {
         while (RedoHistory.length > 0) RedoHistory.pop() // Delete RedoHistory
         UndoHistory.push(commit);
-        while (UndoHistory.length > MaxHistoryLength) {
+        while (UndoLength > MaxHistoryLength) {
             let commit = UndoHistory.shift();
             UndoLength-=commit!.changes.length;
         }
@@ -20,17 +20,27 @@ export default class History {
     }
 
     static Undo() {
-        if (UndoHistory.length === 0) return;
+        if (UndoHistory.length === 0) return null;
 
         UndoHistory[UndoHistory.length-1].rollback();        
-        UndoLength-=UndoHistory[UndoHistory.length-1].changes.length;
+        UndoLength-=UndoHistory[UndoHistory.length-1].changes.length;        
         RedoHistory.push(UndoHistory.pop()!);
+        return RedoHistory[RedoHistory.length-1]
     }
     static Redo() {
-        if (RedoHistory.length === 0) return;
+        if (RedoHistory.length === 0) return null;
         RedoHistory[RedoHistory.length-1].redo();
+        UndoLength+=RedoHistory[RedoHistory.length-1].changes.length;
         UndoHistory.push(RedoHistory.pop()!);
-        UndoLength+=UndoHistory[UndoHistory.length-1].changes.length;
+        return UndoHistory[UndoHistory.length-1]
 
+    }
+
+    static getLength() {
+        return UndoLength;
+    }
+
+    static getCapacity() {
+        return MaxHistoryLength;
     }
 }

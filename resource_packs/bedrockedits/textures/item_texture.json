@@ -25,6 +25,9 @@
 		},
 		"bets_undo": {
 			"textures": "textures/items/bets_undo"
+		},
+		"bets_bucket": {
+			"textures": "textures/items/bets_bucket"
 		}
 	}
 }
