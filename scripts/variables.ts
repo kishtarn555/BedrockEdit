@@ -6,6 +6,7 @@ let coordinates2:Vector3|undefined
 let block1:BlockPermutation | undefined
 let block2:BlockPermutation | undefined
 
+const MAX_WORKSPACE_PERIMETER = 1184
 class BetsCoords {
 
     static setPos1(location:Vector3) {
@@ -46,6 +47,29 @@ class BetsCoords {
     static arePositionsValid() {
         return coordinates1 != null && coordinates2 != null;
     }
+
+    static getBlockBoundsArea() {
+        if (!this.arePositionsValid()) {
+            return;
+        }
+        let v1 = this.getBlock1()!
+        let v2 = this.getBlock2()!
+        let length = ((Math.abs(v1.x-v2.x)+Math.abs(v1.y-v2.y)+Math.abs(v1.z-v2.z)))*12;
+        let xs = v1.x !== v2.x?2:1;  
+        let ys = v1.y !== v2.y?2:1;  
+        let zs = v1.z !== v2.z?2:1;
+        length += xs*ys+zs;  
+    }
+
+    
+    static isThereAValidWorkspace():boolean {
+        let length = this.getBlockBoundsArea();
+        if (length == null) {
+            return false
+        }
+        return length <= MAX_WORKSPACE_PERIMETER
+
+    }
 }
 
 
@@ -81,4 +105,4 @@ class BetsBlocks {
 }
 
 
-export { BetsCoords, BetsBlocks }
+export { BetsCoords, BetsBlocks, MAX_WORKSPACE_PERIMETER }
