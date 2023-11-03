@@ -2,5 +2,5 @@ import OperatorResult from "./OperatorResult";
 
 export default abstract class BtsOperator {
     abstract form():void;
-    abstract run():OperatorResult;
+    abstract run():Promise<OperatorResult>;
 }
