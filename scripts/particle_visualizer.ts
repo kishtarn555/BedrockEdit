@@ -72,47 +72,47 @@ export default function renderSelection() {
 
     let moolang = new MolangVariableMap()
     let cornerMoolang = new MolangVariableMap()
-    moolang.setFloat("scale", 0.1);
+    moolang.setFloat("scale", 0.15);
     moolang.setFloat("offset_x", 16);
     moolang.setFloat("offset_y", 0);
     cornerMoolang.setFloat("scale", 0.2);
     cornerMoolang.setFloat("offset_x", 0);
     cornerMoolang.setFloat("offset_y", 0);
-
-    for (let x = x1 + 1; x < x2; x++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1, z: z1 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1, z: z2 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2, z: z1 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2, z: z2 }, moolang); } catch { }
+    const offset = 0.45
+    for (let x = x1; x <= x2; x++) {
+        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1-offset, z: z1-offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1-offset, z: z2+offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2+offset, z: z1-offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2+offset, z: z2+offset }, moolang); } catch { }
     }
 
-    for (let y = y1 + 1; y < y2; y++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x1, y: y, z: z1 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x1, y: y, z: z2 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2, y: y, z: z1 }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2, y: y, z: z2 }, moolang); } catch { }
+    for (let y = y1; y <= y2; y++) {
+        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y, z: z1-offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y, z: z2+offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y, z: z1-offset }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y, z: z2+offset }, moolang); } catch { }
     }
 
-    for (let z = z1 + 1; z < z2; z++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x1, y: y1, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2, y: y1, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x1, y: y2, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2, y: y2, z: z }, moolang); } catch { }
+    for (let z = z1; z <= z2; z++) {
+        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y1-offset, z: z }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y1-offset, z: z }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y2+offset, z: z }, moolang); } catch { }
+        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y2+offset, z: z }, moolang); } catch { }
     }
-    if ([pos1.x !== pos2.x, pos1.y !== pos2.y, pos1.z !== pos2.z].filter(Boolean).length >= 2) {
-        if (pos2.x !== pos1.x) {
-            try { overworld.spawnParticle("bets:select_particle", { x: pos1.x, y: pos2.y, z: pos2.z }, cornerMoolang); } catch { }
-            try { overworld.spawnParticle("bets:select_particle", { x: pos2.x, y: pos1.y, z: pos1.z }, cornerMoolang); } catch { }
-        }
-        if (pos2.y !== pos1.y) {
-            try { overworld.spawnParticle("bets:select_particle", { x: pos2.x, y: pos1.y, z: pos2.z }, cornerMoolang); } catch { }
-            try { overworld.spawnParticle("bets:select_particle", { x: pos1.x, y: pos2.y, z: pos1.z }, cornerMoolang); } catch { }
-        }
-        if (pos2.z !== pos1.z) {
-            try { overworld.spawnParticle("bets:select_particle", { x: pos2.x, y: pos2.y, z: pos1.z }, cornerMoolang); } catch { }
-            try { overworld.spawnParticle("bets:select_particle", { x: pos1.x, y: pos1.y, z: pos2.z }, cornerMoolang); } catch { }
-        }
-    }
+    // if ([pos1.x !== pos2.x, pos1.y !== pos2.y, pos1.z !== pos2.z].filter(Boolean).length >= 2) {
+    //     // if (pos2.x !== pos1.x) {
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos1.x-offset, y: pos2.y+offset, z: pos2.z+offset }, cornerMoolang); } catch { }
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos2.x-offset, y: pos1.y+offset, z: pos1.z+offset }, cornerMoolang); } catch { }
+    //     // }
+    //     // if (pos2.y !== pos1.y) {
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos2.x+offset, y: pos1.y-offset, z: pos2.z+offset }, cornerMoolang); } catch { }
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos1.x-offset, y: pos2.y+offset, z: pos1.z-offset }, cornerMoolang); } catch { }
+    //     // }
+    //     // if (pos2.z !== pos1.z) {
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos2.x+offset, y: pos2.y+offset, z: pos1.z-offset }, cornerMoolang); } catch { }
+    //         try { overworld.spawnParticle("bets:select_particle", { x: pos1.x-offset, y: pos1.y-offset, z: pos2.z+offset }, cornerMoolang); } catch { }
+    //     // }
+    // }
 
 
 
