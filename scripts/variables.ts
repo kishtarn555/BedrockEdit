@@ -133,4 +133,4 @@ class BetsBlocks {
 }
 
 
-export { BetsCoords, BetsBlocks, BetsBlockPlacer, MAX_WORKSPACE_PERIMETER }
+export { BetsCoords, BetsBlocks, BetsBlockPlacer, MAX_CHUNK_AREA }
