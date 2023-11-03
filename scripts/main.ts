@@ -4,6 +4,7 @@ import {attachWandListener} from "./tools/wand"
 import {attachPickerItemUse} from "./tools/pick"
 import { attachOperatorItemUseListener } from "./operators/attatcher";
 import renderSelection from "./particle_visualizer"
+import attachModalItemUseListeners from "./modals/itemAttachments";
 
 const START_TICK = 100;
 
@@ -23,3 +24,4 @@ system.run(mainTick);
 attachPickerItemUse();
 attachWandListener();
 attachOperatorItemUseListener();
+attachModalItemUseListeners();

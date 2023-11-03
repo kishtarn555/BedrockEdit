@@ -1,4 +1,5 @@
 import { Vector3, BlockPermutation, world } from "@minecraft/server"
+import BlockPlacer from "./blockPlacer"
 
 let coordinates1:Vector3|undefined
 let coordinates2:Vector3|undefined
@@ -7,6 +8,7 @@ let block1:BlockPermutation | undefined
 let block2:BlockPermutation | undefined
 
 const MAX_WORKSPACE_PERIMETER = 1184
+const BetsBlockPlacer:BlockPlacer = new BlockPlacer()
 class BetsCoords {
 
     static setPos1(location:Vector3) {
@@ -106,4 +108,4 @@ class BetsBlocks {
 }
 
 
-export { BetsCoords, BetsBlocks, MAX_WORKSPACE_PERIMETER }
+export { BetsCoords, BetsBlocks, BetsBlockPlacer, MAX_WORKSPACE_PERIMETER }

@@ -1,0 +1,6 @@
+bets.modal.block_placing_mode_selection.title.name=Block placing mode
+bets.modal.block_placing_mode_selection.options.name=Options
+bets.modal.block_placing_mode_selection.normal.name=Normal
+bets.modal.block_placing_mode_selection.keep.name=Keep
+bets.modal.block_placing_mode_selection.replace_exactly.name=Replace exactly
+bets.modal.block_placing_mode_selection.replace_loosely.name=Replace loosely [DO NOT USE]
