@@ -24,6 +24,19 @@ export default class Workspace {
         this.dimension.runCommand(`tickingarea remove bets_wsp_${this.identifier}`);
     }
 
+
+    isInBound(location:Vector3) {
+        if (location.x < Math.min(this.corner1.x,this.corner2.x) || location.x > Math.max(this.corner1.x,this.corner2.x)) {
+            return false;
+        }
+        if (location.y < Math.min(this.corner1.y,this.corner2.y) || location.y > Math.max(this.corner1.y,this.corner2.y)) {
+            return false;
+        }
+        if (location.z < Math.min(this.corner1.z,this.corner2.z) || location.z > Math.max(this.corner1.z,this.corner2.z)) {
+            return false;
+        }
+        return true;
+    }
     static unload(dimension:Dimension,identifier:string) {
         dimension.runCommand(`tickingarea remove bets_wsp${identifier}`);
     }

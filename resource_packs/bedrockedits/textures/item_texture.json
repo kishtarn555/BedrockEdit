@@ -31,6 +31,9 @@
 		},
 		"bets_menu_block_mode": {
 			"textures":"textures/items/bets_block_m"
+		},
+		"bets_flood": {
+			"textures":"textures/items/bets_flood_fill"
 		}
 	}
 }

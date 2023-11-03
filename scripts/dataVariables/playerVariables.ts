@@ -1,7 +1,9 @@
 
-import {BlockPermutation, Player, Vector3} from "@minecraft/server"
-import {BetsBlocks, BetsCoords} from "../variables"
-class PlayerVariablesConnection {
+import {BlockPermutation, Player, Vector3,world} from "@minecraft/server"
+import {BetsBlockPlacer, BetsBlocks, BetsCoords} from "../variables"
+import BlockPlacer from "../blockPlacer";
+import Workspace from "../workspace";
+export class PlayerVariablesConnection {
     player:Player
 
     constructor(player:Player) {
@@ -16,6 +18,14 @@ class PlayerVariablesConnection {
         return BetsCoords.getPos2();
     }
 
+    isValidWorkspace() {
+        return BetsCoords.isThereAValidWorkspace();
+    }
+
+    getWorkspace() {
+        if (!this.isValidWorkspace) return;
+        return new Workspace(this.getBlockPos1()!, this.getBlockPos2()!, world.getDimension("overworld"), this.player.name)
+    }
     
 
     getBlockPos1():Vector3|undefined {
@@ -34,5 +44,12 @@ class PlayerVariablesConnection {
         return BetsBlocks.getBlock2();
     }
 
+    getBlockPlacer():BlockPlacer {
+        return BetsBlockPlacer;
+    }
+
+    isBlockPlacerValid():boolean {
+        return this.getBlockPlacer().isValid(this.getBlock1(), this.getBlock2());
+    }
 }
 

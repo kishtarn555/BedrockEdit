@@ -1,5 +1,7 @@
 import { BlockPermutation, Dimension, Vector3 } from "@minecraft/server"
 import { BetsBlockPlacer, BetsBlocks } from "../variables"
+import BlockPlacer from "../blockPlacer"
+import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
 
 interface Change {
     dimension:Dimension
@@ -20,7 +22,7 @@ class Commit {
         let newChange:Change = {
             dimension:dimension,
             location:location,
-            previousState:dimension.getBlock(location)?.permutation, //NOTE: Does this need a clone (beta only as of 1/nov/2023)?
+            previousState:dimension.getBlock(location)?.permutation,
             nextState:blockPermutation
         }
         this.changes.push(newChange);
@@ -31,6 +33,21 @@ class Commit {
         BetsBlockPlacer.setBlockPermutation(block, BetsBlocks.getBlock1()!, BetsBlocks.getBlock2(),)
     }
 
+    placeBlock(dimension:Dimension, location:Vector3, pVars:PlayerVariablesConnection) {
+        let newChange:Change = {
+            dimension:dimension,
+            location:location,
+            previousState:dimension.getBlock(location)?.permutation, 
+            nextState: pVars.getBlock1()!
+        }
+        this.changes.push(newChange);
+        let block = dimension.getBlock(location);
+        if (block == null) {
+            return 0; //FIXME
+        }
+        pVars.getBlockPlacer().setBlockPermutation(block, pVars.getBlock1()!, pVars.getBlock2())
+        return 1;
+    }
 
     rollback() {
         for (let i = this.changes.length-1; i >=0; i--) {
