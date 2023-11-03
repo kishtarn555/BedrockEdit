@@ -1,5 +1,28 @@
-import { world, MolangVariableMap } from "@minecraft/server"
+import { world, MolangVariableMap, Vector3 } from "@minecraft/server"
 import { BetsCoords } from "./variables"
+
+
+const offset = 0.45;
+
+function getLineMoolang(x:number,y:number,z:number,offset_x:number) :MolangVariableMap{
+
+    let moolang = new MolangVariableMap()
+    moolang.setFloat("x", x);    
+    moolang.setFloat("y", y);    
+    moolang.setFloat("z", z);
+    moolang.setFloat("offset_x", offset_x);
+    moolang.setFloat("scale_x", offset_x==0?0.5:0.15);
+    moolang.setFloat("scale_y", offset_x==0?0.15:0.5);    
+    return moolang;
+}
+
+function spawnLine(coords:Vector3, x:number, y:number, z:number, offset_x:number) {
+    
+    let overworld = world.getDimension("overworld");
+
+    try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(x,y,z,offset_x)); } catch { }
+    try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(-x,-y,-z,offset_x)); } catch { }
+}
 
 export default function renderSelection() {
 
@@ -70,34 +93,29 @@ export default function renderSelection() {
 
     let length = (x2 - x1 + 1) + (y2 - y1 + 1) + (z2 - z1 + 1)
 
-    let moolang = new MolangVariableMap()
     let cornerMoolang = new MolangVariableMap()
-    moolang.setFloat("scale", 0.15);
-    moolang.setFloat("offset_x", 16);
-    moolang.setFloat("offset_y", 0);
     cornerMoolang.setFloat("scale", 0.2);
     cornerMoolang.setFloat("offset_x", 0);
     cornerMoolang.setFloat("offset_y", 0);
-    const offset = 0.45
     for (let x = x1; x <= x2; x++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1-offset, z: z1-offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y1-offset, z: z2+offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2+offset, z: z1-offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x, y: y2+offset, z: z2+offset }, moolang); } catch { }
+        spawnLine( { x: x, y: y1-offset, z: z1-offset },1,0,0,0);
+        spawnLine( { x: x, y: y1-offset, z: z2+offset },1,0,0,0);
+        spawnLine( { x: x, y: y2+offset, z: z1-offset },1,0,0,0);
+        spawnLine( { x: x, y: y2+offset, z: z2+offset },1,0,0,0);
     }
 
     for (let y = y1; y <= y2; y++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y, z: z1-offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y, z: z2+offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y, z: z1-offset }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y, z: z2+offset }, moolang); } catch { }
+        spawnLine({ x: x1-offset, y: y, z: z1-offset }, 1,0,0,16);
+        spawnLine({ x: x1-offset, y: y, z: z2+offset }, 1,0,0,16);
+        spawnLine({ x: x2+offset, y: y, z: z1-offset }, 1,0,0,16);
+        spawnLine({ x: x2+offset, y: y, z: z2+offset }, 1,0,0,16);
     }
 
     for (let z = z1; z <= z2; z++) {
-        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y1-offset, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y1-offset, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x1-offset, y: y2+offset, z: z }, moolang); } catch { }
-        try { overworld.spawnParticle("bets:select_particle", { x: x2+offset, y: y2+offset, z: z }, moolang); } catch { }
+        spawnLine( { x: x1-offset, y: y1-offset, z: z },0,0,1,0);
+        spawnLine( { x: x2+offset, y: y1-offset, z: z },0,0,1,0);
+        spawnLine( { x: x1-offset, y: y2+offset, z: z },0,0,1,0);
+        spawnLine( { x: x2+offset, y: y2+offset, z: z },0,0,1,0);
     }
     // if ([pos1.x !== pos2.x, pos1.y !== pos2.y, pos1.z !== pos2.z].filter(Boolean).length >= 2) {
     //     // if (pos2.x !== pos1.x) {
