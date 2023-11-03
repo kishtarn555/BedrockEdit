@@ -133,12 +133,20 @@ export class SchedulerPerTick {
 
 export class TickForeach<T> {
     processor: (arg: T) => void
+    onEndBlock:((tick:number)=>void)|undefined
+    onStartBlock:((tick:number)=>void)|undefined
     iterationsPerTick: number
-    constructor(processor: (arg: T) => void, iterationsPerTick: number) {
+    startTick:number
+    constructor(processor: (arg: T) => void, iterationsPerTick: number,onStartBlock?:(tick:number)=>void, onEndBlock?:(tick:number)=>void) {
         this.iterationsPerTick = iterationsPerTick;
         this.processor = processor
+        this.onStartBlock = onStartBlock
+        this.onEndBlock = onEndBlock
+        this.startTick = 0
     }
+    
     async runOnIterable(iterable: Iterable<T>) {
+        this.startTick=system.currentTick;
         return new Promise<void>(
             (resolve, reject) => this.runBlock(iterable[Symbol.iterator](), resolve)
         );
@@ -147,15 +155,18 @@ export class TickForeach<T> {
     private runBlock(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
         let iter = 0;
         let cursor = iterator.next();
+        this.onStartBlock?.(system.currentTick-this.startTick)
         while (!cursor.done) {
             this.processor(cursor.value);
-            if (iter >= this.iterationsPerTick) {
+            if (iter >= this.iterationsPerTick) {                
+                this.onEndBlock?.(system.currentTick-this.startTick)
                 system.run(() => this.runBlock(iterator, resolve)); //Run remaining items on next tick
                 return;
             }
             cursor = iterator.next();
             iter++;
         }
+        this.onEndBlock?.(system.currentTick-this.startTick);
         resolve();
     }
 }

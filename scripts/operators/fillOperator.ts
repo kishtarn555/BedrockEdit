@@ -1,4 +1,4 @@
-import { CommandError, Dimension, Vector3, world,system } from "@minecraft/server"
+import {  Dimension, Vector3, world } from "@minecraft/server"
 import { BetsBlockPlacer, BetsBlocks, BetsCoords } from "../variables"
 import OperatorResult from "./OperatorResult"
 import BtsOperator, { OperatorReturner } from "./Operator"
@@ -66,29 +66,29 @@ export default class OperatorFill extends BtsOperator {
         let z2 = Math.max(pos1.z, pos2.z);
         let area = (x2 - x1 + 1) * (y2 - y1 + 1) * (z2 - z1 + 1);
         let blocksChanged = 0;
-        world.sendMessage("ReachHere");
+        let commit: Commit | undefined;
         try {
-            let fors = new TickForeach((pos: Vector3) => {
-                let commit: Commit = new Commit(`Fill operation blocks`);
+            let fors = new TickForeach(
+                (pos: Vector3) => {
 
-                // world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
-                //FIXME: Support multidimension
-                //FIXME: Add arguments
-                let point = { x: pos.x, y: pos.y, z: pos.z };
-                let block = world.getDimension("overworld").getBlock(point)
-                if (block == null) return;
-                blocksChanged++;
-                commit.setBlockPermutation(world.getDimension("overworld"), point, BetsBlocks.getBlock1()!);
-                History.AddCommit(commit);
-            },
-                500);
+                    // world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
+                    //FIXME: Support multidimension
+                    //FIXME: Add arguments
+                    let point = { x: pos.x, y: pos.y, z: pos.z };
+                    let block = world.getDimension("overworld").getBlock(point)
+                    if (block == null) return;
+                    blocksChanged++;
+                    commit!.setBlockPermutation(world.getDimension("overworld"), point, BetsBlocks.getBlock1()!);
+                },
+                500,
+                (tick)=> { commit = new Commit(`Fill operation (${tick})`)},
+                (_) => { History.AddCommit(commit!);}
+            );
             // @ts-ignore
             await fors.runOnIterable(this.coords(x1, y1, z1, x2, y2, z2))
         } catch (error) {
             world.sendMessage((error as Error).stack ?? "lol")
         }
-
-        world.sendMessage("But not here");
         return ({
             status: area === blocksChanged ? "success" : "warning",
             message: `Filled ${blocksChanged}/${area}`
