@@ -7,7 +7,7 @@ let coordinates2:Vector3|undefined
 let block1:BlockPermutation | undefined
 let block2:BlockPermutation | undefined
 
-const MAX_WORKSPACE_PERIMETER = 1184
+const MAX_CHUNK_AREA = 100
 const BetsBlockPlacer:BlockPlacer = new BlockPlacer()
 class BetsCoords {
 
@@ -56,21 +56,46 @@ class BetsCoords {
         }
         let v1 = this.getBlock1()!
         let v2 = this.getBlock2()!
-        let length = ((Math.abs(v1.x-v2.x)+Math.abs(v1.y-v2.y)+Math.abs(v1.z-v2.z)))*12;
         let xs = v1.x !== v2.x?2:1;  
         let ys = v1.y !== v2.y?2:1;  
         let zs = v1.z !== v2.z?2:1;
+        let length = (
+            (Math.abs(v1.x-v2.x)*ys*zs) +
+            (Math.abs(v1.y-v2.y)*xs*zs) +
+            (Math.abs(v1.z-v2.z)*xs*ys )
+        ); 
+        
         length += xs*ys*zs;  
         return length;
     }
 
+    static getChunkCount() {
+        if (!this.arePositionsValid()) {
+            return;
+        }
+
+        let pos1 = this.getBlock1()!
+        let pos2 = this.getBlock2()!
+
+        let chunk1 = {
+            x: Math.floor(pos1.x/16),
+            z: Math.floor(pos1.z/16)
+        }
+        let chunk2 = {
+            x: Math.floor(pos2.x/16),
+            z: Math.floor(pos2.z/16),
+        }
+
+        return (Math.abs(chunk1.x-chunk2.x)+1)*(Math.abs(chunk1.z-chunk2.z)+1);
+    }
+
     
     static isThereAValidWorkspace():boolean {
-        let length = this.getBlockBoundsLength();
-        if (length == null) {
+        let chunkArea = this.getChunkCount();
+        if (chunkArea == null) {
             return false;
         }
-        return length <= MAX_WORKSPACE_PERIMETER
+        return chunkArea <= MAX_CHUNK_AREA
 
     }
 }
