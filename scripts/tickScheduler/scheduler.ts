@@ -63,6 +63,7 @@ class TickChainLink<In, Out, ChainIn, ChainOut> {
 
     finally(callback: (returner:ChainReturner<ChainOut>,arg: Out) => ChainOut) {
         this.nextLink = new TickChainEnd(callback, this.chain);
+        return this.nextLink;
 
     }
 
