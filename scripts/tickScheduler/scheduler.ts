@@ -130,43 +130,78 @@ export class SchedulerPerTick {
 
 }
 
-
+/**
+ * Represents a class that calls the processor on each element from an iterator in batches, each batch is done in a game tick.
+ *
+ * @template T - The type of elements to be processed.
+ */
 export class TickForeach<T> {
+    /**
+     * A function that processes an element of the iterator.
+     */
     processor: (arg: T) => void
-    onEndBlock:((tick:number)=>void)|undefined
-    onStartBlock:((tick:number)=>void)|undefined
-    iterationsPerTick: number
-    startTick:number
-    constructor(processor: (arg: T) => void, iterationsPerTick: number,onStartBlock?:(tick:number)=>void, onEndBlock?:(tick:number)=>void) {
-        this.iterationsPerTick = iterationsPerTick;
+    /**
+     * A function called at the start of each Batch.
+     */
+    onStartBatch:((tick:number)=>void)|undefined
+    /**
+     * A function called at the end of each Batch.
+     */
+    onEndBatch:((tick:number)=>void)|undefined
+    /*
+     * Maximum size of batches
+    */
+    batchSize: number
+    private startTick:number
+    /**
+     * Creates an instance of TickForeach.
+     * 
+     * @param {(arg: T) => void} processor - A function that processes an element of the iterator.
+     * @param {number} batchSize - Maximum size of batches.
+     * @param {((tick: number) => void) | undefined} [onStartBatch] - A function called at the start of each Batch.
+     * @param {((tick: number) => void) | undefined} [onEndBatch] - A function called at the end of each Batch.
+     */
+    constructor(
+        processor: (arg: T) => void, 
+        batchSize: number,
+        onStartBatch?:(tick:number)=>void, 
+        onEndBatch?:(tick:number)=>void
+    ) {
+        this.batchSize = batchSize;
         this.processor = processor
-        this.onStartBlock = onStartBlock
-        this.onEndBlock = onEndBlock
+        this.onStartBatch = onStartBatch
+        this.onEndBatch = onEndBatch
         this.startTick = 0
     }
     
+    /**
+     * Runs the processor on elements from the provided iterable in batches.
+     * 
+     * @param {Iterable<T>} iterable - The iterable containing elements to be processed.
+     * @returns {Promise<void>} A promise that resolves when all elements have been processed.
+     */
     async runOnIterable(iterable: Iterable<T>) {
         this.startTick=system.currentTick;
         return new Promise<void>(
-            (resolve, reject) => this.runBlock(iterable[Symbol.iterator](), resolve)
+            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve)
         );
     }
 
-    private runBlock(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
+    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
         let iter = 0;
         let cursor = iterator.next();
-        this.onStartBlock?.(system.currentTick-this.startTick)
+        this.onStartBatch?.(system.currentTick-this.startTick)
         while (!cursor.done) {
             this.processor(cursor.value);
-            if (iter >= this.iterationsPerTick) {                
-                this.onEndBlock?.(system.currentTick-this.startTick)
-                system.run(() => this.runBlock(iterator, resolve)); //Run remaining items on next tick
+            if (iter >= this.batchSize) {                
+                this.onEndBatch?.(system.currentTick-this.startTick)
+                system.run(() => this.nextBatch(iterator, resolve)); //Run remaining items on next tick
                 return;
             }
             cursor = iterator.next();
             iter++;
         }
-        this.onEndBlock?.(system.currentTick-this.startTick);
+        this.onEndBatch?.(system.currentTick-this.startTick);
         resolve();
     }
 }
