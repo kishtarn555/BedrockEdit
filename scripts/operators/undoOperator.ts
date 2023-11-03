@@ -6,7 +6,10 @@ export default class OperatorUndo extends BtsOperator {
     form(): void {
         
     }
-    run(): OperatorResult {
+    run(): Promise<OperatorResult> {
+        return new Promise<OperatorResult>((resolve, reject)=> {resolve(this.inrun())});
+    }
+    private inrun(): OperatorResult {
         let commit = History.Undo();
         if (commit == null) {
             return {

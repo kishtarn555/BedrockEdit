@@ -31,9 +31,9 @@ function attachOperatorItemUseListener() {
             default: return;
         }
         system.run(()=>{
-            operator.form();
-            let response = operator.run();
-            logOperator(args.itemStack.typeId, args.source, response);
+            // operator.form();
+            operator.run().then(response=>
+            logOperator(args.itemStack.typeId, args.source, response));
         });
     });
 }

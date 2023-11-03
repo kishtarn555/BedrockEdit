@@ -10,7 +10,13 @@ export default class OperatorLine extends BtsOperator {
     form(): void {
         
     }
-    run(): OperatorResult {
+
+    run () :Promise<OperatorResult> {
+        return new Promise<OperatorResult>((resolve, reject)=> {
+            resolve(this.inrun());
+        });
+    }
+    private inrun(): OperatorResult {
         if (!BetsCoords.arePositionsValid()) {
             return {
                 status: "error",

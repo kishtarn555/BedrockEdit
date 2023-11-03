@@ -6,7 +6,12 @@ export default class OperatorRedo extends BtsOperator {
     form(): void {
         
     }
-    run(): OperatorResult {
+    
+    run(): Promise<OperatorResult> {
+       return new Promise<OperatorResult> ((resolve, reject)=> {resolve(this.inrun());});
+    }
+    
+    private inrun(): OperatorResult {
         let commit = History.Redo();
         if (commit == null) {
             return {

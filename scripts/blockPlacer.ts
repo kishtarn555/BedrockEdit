@@ -1,8 +1,15 @@
 import { Block, BlockPermutation } from "@minecraft/server";
 
 export default class BlockPlacer {
+    isValid(primary?:BlockPermutation, secondary?:BlockPermutation) {
+        if (primary==null) return false;
+        if (this.operationMode == BlockPlacingMode.normal || this.operationMode == BlockPlacingMode.keep) {
+            return true;
+        }
+        return secondary!=null;
+    }
+    
     operationMode:BlockPlacingMode = BlockPlacingMode.normal
-
 
     setBlockPermutation(block:Block, primary:BlockPermutation, secondary?:BlockPermutation) {
         switch (this.operationMode) {
