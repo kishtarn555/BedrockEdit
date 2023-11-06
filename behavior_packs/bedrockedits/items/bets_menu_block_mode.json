@@ -17,7 +17,7 @@
         "texture": "bets_menu_block_mode"  
       },
       "minecraft:display_name": {  
-        "value": "Bets blue wand (1)"  
+        "value": "Block placing mode"  
       }  
     }
   }
