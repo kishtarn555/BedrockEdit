@@ -17,7 +17,7 @@
         "texture": "bets_line"  
       },
       "minecraft:display_name": {  
-        "value": "Bets Operator Line"  
+        "value": "bets.operator.line.item.name"  
       }  
     }
   }

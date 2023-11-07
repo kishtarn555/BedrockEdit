@@ -17,7 +17,7 @@
         "texture": "bets_menu_block_mode"  
       },
       "minecraft:display_name": {  
-        "value": "Block placing mode"  
+        "value": "bets.item.menu.block_mode.name"  
       }  
     }
   }

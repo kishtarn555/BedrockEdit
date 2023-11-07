@@ -17,7 +17,7 @@
         "texture": "bets_blue_picker"  
       },
       "minecraft:display_name": {  
-        "value": "Bets blue picker (1)"  
+        "value": "bets.tools.picker.blue.item.name"  
       }  
     }
   }

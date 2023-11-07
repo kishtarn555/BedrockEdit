@@ -17,7 +17,7 @@
         "texture": "bets_red_picker"  
       },
       "minecraft:display_name": {  
-        "value": "Bets red picker (2)"  
+        "value": "bets.tools.picker.red.item.name"  
       }  
     }
   }

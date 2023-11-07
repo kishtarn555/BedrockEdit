@@ -17,7 +17,7 @@
         "texture": "bets_redo"  
       },
       "minecraft:display_name": {  
-        "value": "Bets REDO"  
+        "value": "bets.operator.redo.item.name"  
       }  
     }
   }

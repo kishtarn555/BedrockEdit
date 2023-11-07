@@ -17,7 +17,7 @@
         "texture": "bets_flood"  
       },
       "minecraft:display_name": {  
-        "value": "Bets flood operator"  
+        "value": "bets.operator.flood.item.name"  
       }  
     }
   }

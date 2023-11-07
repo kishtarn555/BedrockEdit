@@ -17,7 +17,7 @@
         "texture": "bets_red_wand"  
       },
       "minecraft:display_name": {  
-        "value": "Bets red wand (2)"  
+        "value": "bets.tools.wand.red.item.name"  
       }  
     }
   }

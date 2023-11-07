@@ -17,7 +17,7 @@
         "texture": "bets_bucket"  
       },
       "minecraft:display_name": {  
-        "value": "Bets fill operator"  
+        "value": "bets.operator.fill.item.name"  
       }  
     }
   }

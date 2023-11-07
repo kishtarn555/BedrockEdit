@@ -17,7 +17,7 @@
         "texture": "bets_undo"  
       },
       "minecraft:display_name": {  
-        "value": "Bets UNDO"  
+        "value": "bets.operator.undo.item.name"  
       }  
     }
   }

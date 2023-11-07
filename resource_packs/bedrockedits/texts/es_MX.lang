@@ -1,6 +1,18 @@
-bets.modal.block_placing_mode_selection.title.name=Modo de colocación de bloques
-bets.modal.block_placing_mode_selection.options.name=Opciones
-bets.modal.block_placing_mode_selection.normal.name=Normal
+
+bets.item.menu.block_mode.name=Modo de colocación de bloques
 bets.modal.block_placing_mode_selection.keep.name=Mantener
+bets.modal.block_placing_mode_selection.normal.name=Normal
+bets.modal.block_placing_mode_selection.options.name=Opciones
 bets.modal.block_placing_mode_selection.replace_exactly.name=Reemplazar exacto
-bets.modal.block_placing_mode_selection.replace_loosely.name=Replace similares [NO USAR]
+bets.modal.block_placing_mode_selection.replace_loosely.name=Remplazar similares [NO USAR]
+bets.modal.block_placing_mode_selection.title.name=Modo de colocación de bloques
+bets.operator.fill.item.name=Bets rellenar
+bets.operator.flood.item.name=Bets relleno por difusión
+bets.operator.line.item.name=Bets línea
+bets.operator.redo.item.name=Bets rehacer
+bets.operator.undo.item.name=Bets deshacer
+bets.tools.picker.blue.item.name=Bets selector azul (1)
+bets.tools.picker.red.item.name=Bets selector rojo (2)
+bets.tools.wand.blue.item.name=Bets varita azul (1)
+bets.tools.wand.item.name=Bets varita
+bets.tools.wand.red.item.name=Bets varita roja (2)
