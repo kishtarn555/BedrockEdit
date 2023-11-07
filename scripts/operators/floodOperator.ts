@@ -1,6 +1,6 @@
 import { Dimension, Player, Vector3 } from "@minecraft/server";
-import BtsOperator from "./Operator";
-import OperatorResult from "./OperatorResult";
+import { Operator } from "./operator";
+import {OperatorResult} from "./operatorResult";
 import { PlayerVariablesConnection } from "../dataVariables/playerVariables";
 import { ChainReturner, TickForeach } from "../tickScheduler/scheduler";
 import { Commit } from "../commits/commit";
@@ -8,27 +8,27 @@ import History from "../commits/history";
 import { BlockPlacingMode } from "../blockPlacer";
 
 
-export class OperatorFlood extends BtsOperator {
-    private pVars: PlayerVariablesConnection;
-    location: Vector3
-    dimension: Dimension
+interface FloodParameters {
+    location:Vector3
+    dimension:Dimension
 
-    constructor(player: Player, dimension: Dimension, effectLocation: Vector3) {
-        super();
+}
+
+export class OperatorFlood implements Operator<FloodParameters> {
+    requiresParameters: boolean = false; //I don't ko
+    parameters: FloodParameters;
+    player: Player;
+    pVars:PlayerVariablesConnection
+
+    constructor(player: Player,parameters:FloodParameters) {
         this.player = player;
-        this.dimension = dimension;
-        this.location = effectLocation;
+        this.parameters = parameters
         this.pVars = new PlayerVariablesConnection(player);
 
     }
 
 
-    form(): void {
-        throw new Error("Method not implemented.");
-    }
-
-
-    run(): Promise<OperatorResult> {
+    execute(): Promise<OperatorResult> {
 
         return new Promise<OperatorResult>((resolve, reject) => {
             const validation = this.validate();
@@ -66,8 +66,8 @@ export class OperatorFlood extends BtsOperator {
         });
     }
     private * floodFill() {
-        let stack: Vector3[] = [this.location]
-        let replacement = this.dimension.getBlock(this.location)?.permutation;   
+        let stack: Vector3[] = [this.parameters.location]
+        let replacement = this.parameters.dimension.getBlock(this.parameters.location)?.permutation;   
         let dVector: Vector3[] = [
             { x: 1, y: 0, z: 0 },
             { x: -1, y: 0, z: 0 },
@@ -76,14 +76,14 @@ export class OperatorFlood extends BtsOperator {
             { x: 0, y: 0, z: 1 },
             { x: 0, y: 0, z: -1 },
         ]
-        yield this.location;
+        yield this.parameters.location;
 
         while (stack.length > 0) {
             let cur = stack.pop()!;
             for (let dt of dVector) {
                 let next: Vector3 = { x: cur.x + dt.x, y: cur.y + dt.y, z: cur.z + dt.z }
                 if (!this.pVars.getWorkspace()?.isInBound(next)) continue;
-                if (this.dimension.getBlock(next)?.permutation!==replacement) continue;
+                if (this.parameters.dimension.getBlock(next)?.permutation!==replacement) continue;
                 stack.push(next);
                 yield next;
             }
@@ -97,7 +97,7 @@ export class OperatorFlood extends BtsOperator {
         if (!this.pVars.isBlockPlacerValid()) {
             return "No valid Block placer";
         }
-        if (this.dimension.getBlock(this.location)===this.pVars.getBlock1()) {
+        if (this.parameters.dimension.getBlock(this.parameters.location)===this.pVars.getBlock1()) {
             return "Cannot replace a block with the same block";
         }
         return "success";

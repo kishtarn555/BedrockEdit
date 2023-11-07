@@ -5,7 +5,7 @@ import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
 
 interface Change {
     dimension:Dimension
-    previousState?:BlockPermutation
+    previousState:BlockPermutation
     nextState:BlockPermutation
     location: Vector3
 }
@@ -18,11 +18,20 @@ class Commit {
         this.message =message
     }
 
+    saveChange(dimension:Dimension, location:Vector3, previousState:BlockPermutation, nextState:BlockPermutation ) {
+        this.changes.push({
+            dimension:dimension,
+            location:location,
+            previousState:previousState,
+            nextState:nextState
+        })
+    }
+
     setBlockPermutation(dimension:Dimension, location:Vector3, blockPermutation:BlockPermutation) {
         let newChange:Change = {
             dimension:dimension,
             location:location,
-            previousState:dimension.getBlock(location)?.permutation,
+            previousState:dimension.getBlock(location)?.permutation ?? blockPermutation,
             nextState:blockPermutation
         }
         this.changes.push(newChange);
@@ -37,7 +46,7 @@ class Commit {
         let newChange:Change = {
             dimension:dimension,
             location:location,
-            previousState:dimension.getBlock(location)?.permutation, 
+            previousState:dimension.getBlock(location)?.permutation ?? pVars.getBlock1()!, 
             nextState: pVars.getBlock1()!
         }
         this.changes.push(newChange);

@@ -1,8 +1,10 @@
 
-import {BlockPermutation, Player, Vector3,world} from "@minecraft/server"
+import {BlockPermutation, Player, Vector3,system,world} from "@minecraft/server"
 import {BetsBlockPlacer, BetsBlocks, BetsCoords} from "../variables"
 import BlockPlacer from "../blockPlacer";
 import Workspace from "../workspace";
+
+const Cooldowns=new Map<string,number>();
 export class PlayerVariablesConnection {
     player:Player
 
@@ -23,8 +25,8 @@ export class PlayerVariablesConnection {
     }
 
     getWorkspace() {
-        if (!this.isValidWorkspace) return;
-        return new Workspace(this.getBlockPos1()!, this.getBlockPos2()!, world.getDimension("overworld"), this.player.name)
+        if (!this.isValidWorkspace()) return;
+        return new Workspace(this.getBlockPos1()!, this.getBlockPos2()!, this.player.dimension, this.player.name)
     }
     
 
@@ -50,6 +52,17 @@ export class PlayerVariablesConnection {
 
     isBlockPlacerValid():boolean {
         return this.getBlockPlacer().isValid(this.getBlock1(), this.getBlock2());
+    }
+
+    checkCooldown(cooldown:string) {
+        if (!Cooldowns.has(cooldown)) 
+            return true;
+        return Cooldowns.get(cooldown)! < system.currentTick;
+    }
+
+    
+    setCooldown(cooldown:string, ticks:number=10) {
+        Cooldowns.set(cooldown, system.currentTick+ticks);
     }
 }
 

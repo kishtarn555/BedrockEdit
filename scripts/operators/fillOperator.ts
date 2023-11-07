@@ -1,38 +1,51 @@
-import {  Dimension, Vector3, world } from "@minecraft/server"
-import { BetsBlockPlacer, BetsBlocks, BetsCoords } from "../variables"
-import OperatorResult from "./OperatorResult"
-import BtsOperator, { OperatorReturner } from "./Operator"
+import { Dimension, Player, Vector3, world } from "@minecraft/server"
+import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
+import { OperatorResult } from "./operatorResult"
+import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
 import History from "../commits/history"
 import Workspace from "../workspace"
 import { ChainReturner, TickChain, TickForeach } from "../tickScheduler/scheduler"
-export default class OperatorFill extends BtsOperator {
+import { OperatorReturner } from "./operatorReturner"
+interface FillParameters {
 
+}
+export default class OperatorFill implements Operator<FillParameters> {
+
+    requiresParameters: boolean = false
+    parameters: FillParameters
+    player: Player;
+    playerVariables: PlayerVariablesConnection
     workspace: Workspace | undefined
-    dimension: Dimension | undefined
-    form(): void {
 
+    constructor(player: Player, parameters: FillParameters) {
+        this.parameters = parameters;
+        this.player = player;
+        this.playerVariables = new PlayerVariablesConnection(player);
+        this.workspace = this.playerVariables.getWorkspace();
+        
     }
-    run(): Promise<OperatorResult> {
+    
+    execute(): Promise<OperatorResult> {
         return new TickChain<undefined, OperatorResult>()
-            .first(this.validate)
-            .finally(this.fill.bind(this))
-            .run(undefined);
-
+        .first(this.validate.bind(this))
+        .finally(this.fill.bind(this))
+        .run(undefined);
     }
+    
+    
     private loadWorkspace() {
-        this.workspace = new Workspace(BetsCoords.getBlock1()!, BetsCoords.getBlock2()!, this.dimension!, "fill_operator");
-        this.workspace.load();
+        this.workspace!.load();
     }
     private async validate(returner: OperatorReturner) {
-        if (!BetsCoords.isThereAValidWorkspace()) {
+        if (this.workspace == null) {
             returner.breakAndReturn({
                 status: "error",
                 message: "There's no valid workspace"
             });
             return;
         }
-        if (!BetsBlockPlacer.isValid(BetsBlocks.getBlock1(), BetsBlocks.getBlock2())) {
+        if (!this.playerVariables.isBlockPlacerValid()) {
             returner.breakAndReturn({
                 status: "error",
                 message: "Select the proper blocks"
@@ -41,20 +54,10 @@ export default class OperatorFill extends BtsOperator {
         }
     }
 
-    private * coords(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
-        for (let x = x1; x <= x2; x++) {
-            for (let y = y1; y <= y2; y++) {
-                for (let z = z1; z <= z2; z++) {
-                    yield { x: x, y: y, z: z };
-                }
-            }
-        }
-
-    }
 
     private async fill(returner: OperatorReturner): Promise<OperatorResult> {
-        let pos1: Vector3 = BetsCoords.getBlock1()!
-        let pos2: Vector3 = BetsCoords.getBlock2()!
+        let pos1: Vector3 = this.playerVariables.getBlockPos1()!
+        let pos2: Vector3 = this.playerVariables.getBlockPos2()!
 
 
         //NOTE: This might need a bump after fillBlocks is added
@@ -78,14 +81,19 @@ export default class OperatorFill extends BtsOperator {
                     let block = world.getDimension("overworld").getBlock(point)
                     if (block == null) return;
                     blocksChanged++;
-                    commit!.setBlockPermutation(world.getDimension("overworld"), point, BetsBlocks.getBlock1()!);
+                    this.playerVariables.getBlockPlacer().placeBlock(
+                        block, 
+                        this.playerVariables.getBlock1()!,
+                        this.playerVariables.getBlock2(),
+                        commit
+                    );
                 },
                 500,
-                (tick)=> { commit = new Commit(`Fill operation (${tick})`)},
-                (_) => { History.AddCommit(commit!);}
+                (tick) => { commit = new Commit(`Fill operation (${tick})`) },
+                (_) => { History.AddCommit(commit!); }
             );
             // @ts-ignore
-            await fors.runOnIterable(this.coords(x1, y1, z1, x2, y2, z2))
+            await fors.runOnIterable(this.workspace!.iterable())
         } catch (error) {
             world.sendMessage((error as Error).stack ?? "lol")
         }

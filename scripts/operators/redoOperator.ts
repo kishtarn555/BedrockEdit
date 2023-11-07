@@ -1,13 +1,24 @@
-import OperatorResult from "./OperatorResult"
-import BtsOperator from "./Operator"
+import {OperatorResult} from "./operatorResult"
+import {Operator} from "./operator"
 import History from "../commits/history"
+import { Player } from "@minecraft/server";
 
-export default class OperatorRedo extends BtsOperator {
-    form(): void {
-        
+interface RedoParameters {
+
+}
+
+export default class OperatorRedo implements Operator<RedoParameters> {
+    requiresParameters: boolean=false;
+    parameters: RedoParameters;
+    player: Player;
+
+    constructor(player:Player, parameters:RedoParameters) {
+        this.player=player;
+        this.parameters=parameters;
     }
     
-    run(): Promise<OperatorResult> {
+    
+    execute(): Promise<OperatorResult> {
        return new Promise<OperatorResult> ((resolve, reject)=> {resolve(this.inrun());});
     }
     

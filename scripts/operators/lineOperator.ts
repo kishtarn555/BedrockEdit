@@ -1,30 +1,46 @@
-import { CommandError, Vector3, world } from "@minecraft/server"
-import { BetsBlocks, BetsCoords } from "../variables"
-import OperatorResult from "./OperatorResult"
-import { plot3D } from "../BresenhamLine"
-import BtsOperator from "./Operator"
+import { Dimension, Player, Vector3, world } from "@minecraft/server"
+import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
+import { OperatorResult } from "./operatorResult"
+import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
 import History from "../commits/history"
+import Workspace from "../workspace"
+import { ChainReturner, TickChain, TickForeach } from "../tickScheduler/scheduler"
+import { OperatorReturner } from "./operatorReturner"
+import { FormRejectError } from "@minecraft/server-ui"
+import { plot3D } from "../BresenhamLine"
+interface FillParameters {
 
-export default class OperatorLine extends BtsOperator {
-    form(): void {
-        
+}
+export default class OperatorLine implements Operator<FillParameters> {
+
+    requiresParameters: boolean = false
+    parameters: FillParameters
+    player: Player;
+    playerVariables: PlayerVariablesConnection
+    workspace: Workspace | undefined
+
+    constructor(player: Player, parameters: FillParameters) {
+        this.parameters = parameters;
+        this.player = player;
+        this.playerVariables = new PlayerVariablesConnection(player);
+        this.workspace = this.playerVariables.getWorkspace();
+
     }
 
-    run () :Promise<OperatorResult> {
-        return new Promise<OperatorResult>((resolve, reject)=> {
-            resolve(this.inrun());
-        });
+    execute(): Promise<OperatorResult> {
+        return new Promise((resolve, reject)=>resolve(this.run()))
     }
-    private inrun(): OperatorResult {
-        if (!BetsCoords.arePositionsValid()) {
+
+    private run(): OperatorResult {
+        if (!this.playerVariables.isValidWorkspace()) {
             return {
                 status: "error",
                 message: "Positions are not valid"
             }
     
         }
-        if (!BetsBlocks.isBlock1Valid()) {
+        if (!this.playerVariables.isBlockPlacerValid()) {
             return {
                 status: "error",
                 message: "No block picked"
@@ -34,8 +50,8 @@ export default class OperatorLine extends BtsOperator {
         //NOTE: when fillblocks is released, we might want to upgrade to it 
         let result: OperatorResult
         try {
-            let pos1: Vector3 = BetsCoords.getBlock1()!
-            let pos2: Vector3 = BetsCoords.getBlock2()!
+            let pos1: Vector3 = this.playerVariables.getBlockPos1()!
+            let pos2: Vector3 = this.playerVariables.getBlockPos2()!
     
             let points = plot3D(
                 pos1.x,
@@ -55,7 +71,12 @@ export default class OperatorLine extends BtsOperator {
                 //FIXME: Add arguments
                 let block = world.getDimension("overworld").getBlock(point)
                 if (block == null) continue;
-                commit.setBlockPermutation(world.getDimension("overworld"), point, BetsBlocks.getBlock1()!);
+                this.playerVariables.getBlockPlacer().placeBlock(
+                    block, 
+                    this.playerVariables.getBlock1()!,
+                    this.playerVariables.getBlock2(),
+                    commit
+                );
                 blocksChanged++;
             }
             History.AddCommit(commit);
@@ -75,5 +96,6 @@ export default class OperatorLine extends BtsOperator {
         }
     
     }
-    
+
+
 }

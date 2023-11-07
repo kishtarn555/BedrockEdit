@@ -1,4 +1,5 @@
-export default interface OperatorResult {
-    status:"error"|"success"|"warning",
+
+export interface OperatorResult {
+    status:"success"|"warning"|"error"
     message:string
 }

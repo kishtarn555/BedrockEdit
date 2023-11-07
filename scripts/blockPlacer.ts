@@ -1,6 +1,7 @@
 import { Block, BlockPermutation } from "@minecraft/server";
-
+import { Commit } from "./commits/commit";
 export default class BlockPlacer {
+    
     isValid(primary?:BlockPermutation, secondary?:BlockPermutation) {
         if (primary==null) return false;
         if (this.operationMode == BlockPlacingMode.normal || this.operationMode == BlockPlacingMode.keep) {
@@ -32,7 +33,17 @@ export default class BlockPlacer {
             default:
                 throw new Error("Block placing mode is not supported");
         }
+        return block.permutation
 
+    }
+
+    placeBlock(block: Block,  primary:BlockPermutation, secondary?:BlockPermutation, commit?:Commit) {
+        if (!block.isValid()) return;
+        let previousState = block.permutation
+        let nextState = this.setBlockPermutation(block, primary, secondary);
+        if (nextState!==previousState) {
+            commit?.saveChange(block.dimension,block.location, previousState, nextState);
+        }
     }
 
 
