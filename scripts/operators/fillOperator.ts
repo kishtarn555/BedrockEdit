@@ -116,6 +116,18 @@ export default class OperatorFill implements Operator<FillParameters> {
             await fors.runOnIterable(this.workspace!.iterable())
             History.AddCommit(commit);
         } catch (error) {
+            if (error === "cancelled") {
+                return {
+                    status:"error",
+                    message: "Run was cancelled"
+                }
+            }
+            if (error === "busy") {
+                return {
+                    status:"error",
+                    message: "Scheduler was busy"
+                }
+            }
             world.sendMessage((error as Error).stack ?? "lol")
         }
         return ({

@@ -186,6 +186,7 @@ export class TickForeach<T> {
      */
     async runOnIterable(iterable: Iterable<T>) {
         if (this.busy) {
+            console.warn(this.busy);
             return new Promise<void>((_, reject)=>reject("busy"));
         }
         this.busy=true;
@@ -269,7 +270,7 @@ export class TickTimeForeach<T> {
         this.onEndBatch = onEndBatch
         this.startTick = 0;
         this.cancelled=false;
-        this.busy=true;
+        this.busy=false;
     }
     
     /**
