@@ -225,6 +225,8 @@ export class TickTimeForeach<T> {
     */
     batchDuration: number
     private startTick:number
+    private cancelled:boolean
+    private busy:boolean
     /**
      * Creates an instance of TickForeach.
      * 
@@ -243,36 +245,56 @@ export class TickTimeForeach<T> {
         this.processor = processor
         this.onStartBatch = onStartBatch
         this.onEndBatch = onEndBatch
-        this.startTick = 0
+        this.startTick = 0;
+        this.cancelled=false;
+        this.busy=true;
     }
     
     /**
      * Runs the processor on elements from the provided iterable in batches.
      * 
      * @param {Iterable<T>} iterable - The iterable containing elements to be processed.
-     * @returns {Promise<void>} A promise that resolves when all elements have been processed.
+     * @returns {Promise<void>} A promise that resolves when all elements have been processed. If the iteration is canceled, then it rejects
      */
     async runOnIterable(iterable: Iterable<T>) {
+        if (this.busy) {
+            return new Promise<void>((_,reject)=>reject("busy"));
+        }
+
+        this.cancelled=false;
         this.startTick=system.currentTick;
+        this.busy=true;
         return new Promise<void>(
-            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve)
+            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve,reject)
         );
     }
-
-    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
+    /**
+     * Cancels the run it's currently processing
+     */
+    cancelRun() {
+        this.cancelled=true;
+    }
+    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void, reject:(reason:any)=>void) {
         const startTime = Date.now(); // Record the start time
         let cursor = iterator.next();
         this.onStartBatch?.(system.currentTick-this.startTick)
         while (!cursor.done) {
+            if (this.cancelled) {
+                this.onEndBatch?.(system.currentTick-this.startTick)
+                reject("cancelled");
+                this.busy=false;
+                return;
+            }
             this.processor(cursor.value);
             if (Date.now() - startTime >= this.batchDuration) {                
                 this.onEndBatch?.(system.currentTick-this.startTick)
-                system.run(() => this.nextBatch(iterator, resolve)); //Run remaining items on next tick
+                system.run(() => this.nextBatch(iterator, resolve, reject)); //Run remaining items on next tick
                 return;
             }
             cursor = iterator.next();
         }
         this.onEndBatch?.(system.currentTick-this.startTick);
         resolve();
+        this.busy=false;
     }
 }
