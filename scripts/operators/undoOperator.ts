@@ -33,7 +33,7 @@ export default class OperatorUndo implements Operator<UndoParameters> {
         
         return {
             status: "success",
-            message: `Undone: ${commit.message} (${History.getLength()}/${History.getCapacity()})`
+            message: `Undone: ${commit.message} [${commit.part}] (${History.getLength()}/${History.getCapacity()})`
         }
     
     

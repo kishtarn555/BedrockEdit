@@ -2,6 +2,7 @@ import { BlockPermutation, Dimension, Vector3 } from "@minecraft/server"
 import { BetsBlockPlacer, BetsBlocks } from "../variables"
 import BlockPlacer from "../blockPlacer"
 import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
+import History from "./history"
 
 interface Change {
     dimension:Dimension
@@ -16,18 +17,21 @@ class Commit {
     changes: Change[] = []
     message:string
     part:number
+    inHistory:boolean
 
     constructor (message:string, part?:number) {
         this.message =message
         this.part = part ?? 0
+        this.inHistory=false;
     }
 
 
-    splitCommitIfLengthIsExceeded() {
+    splitCommitIfLengthIsExceeded():[Commit, Commit | null] {
         if (this.changes.length > MAX_COMMIT_LENGTH) {
-            return new Commit(this.message, this.part+1)
+            
+            return [new Commit(this.message, this.part+1), this]
         }
-        return this;
+        return [this, null];
     }
 
     saveChange(dimension:Dimension, location:Vector3, previousState:BlockPermutation, nextState:BlockPermutation ) {

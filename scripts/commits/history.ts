@@ -10,11 +10,16 @@ let UndoLength=0;
 export default class History {
 
     static AddCommit(commit:Commit) {
+        if (commit.inHistory === true) {
+            return;
+        }
+        commit.inHistory=true;
         while (RedoHistory.length > 0) RedoHistory.pop() // Delete RedoHistory
         UndoHistory.push(commit);
         while (UndoLength > MaxHistoryLength) {
             let commit = UndoHistory.shift();
             UndoLength-=commit!.changes.length;
+            commit!.inHistory=false;
         }
         UndoLength+=commit.changes.length;
     }

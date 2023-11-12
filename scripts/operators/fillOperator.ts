@@ -83,6 +83,7 @@ export default class OperatorFill implements Operator<FillParameters> {
         let area = (x2 - x1 + 1) * (y2 - y1 + 1) * (z2 - z1 + 1);
         let blocksChanged = 0;
         let commit: Commit = new Commit(`Fill operation`) ;
+        let previousCommit:Commit | null = null;
         try {
             let fors = new TickForeach(
                 (pos: Vector3) => {
@@ -102,11 +103,18 @@ export default class OperatorFill implements Operator<FillParameters> {
                     );
                 },
                 500,
-                (_) => {commit = commit.splitCommitIfLengthIsExceeded()},
-                (_) => { History.AddCommit(commit!); }
+                (_) => {
+                    
+                    [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();
+                    if (previousCommit != null) {
+                        History.AddCommit(previousCommit);
+                        previousCommit = null;
+                    }
+                },
+                (_) => {}
             );
-            // @ts-ignore
             await fors.runOnIterable(this.workspace!.iterable())
+            History.AddCommit(commit);
         } catch (error) {
             world.sendMessage((error as Error).stack ?? "lol")
         }
