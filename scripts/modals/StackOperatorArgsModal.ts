@@ -33,7 +33,7 @@ export class StackOperatorArgsModal {
             )
             .dropdown(
                 {
-                    translate: "bets.operator.stack.mode.name"
+                    translate: "bets.operator.stack.mode"
                 },
                 [
                     { translate: "bets.operator.stack.mode.masked" },
