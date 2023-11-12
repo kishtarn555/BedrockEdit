@@ -10,12 +10,24 @@ interface Change {
     location: Vector3
 }
 
+const MAX_COMMIT_LENGTH=10000
+
 class Commit {
     changes: Change[] = []
     message:string
+    part:number
 
-    constructor (message:string) {
+    constructor (message:string, part?:number) {
         this.message =message
+        this.part = part ?? 0
+    }
+
+
+    splitCommitIfLengthIsExceeded() {
+        if (this.changes.length > MAX_COMMIT_LENGTH) {
+            return new Commit(this.message, this.part+1)
+        }
+        return this;
     }
 
     saveChange(dimension:Dimension, location:Vector3, previousState:BlockPermutation, nextState:BlockPermutation ) {

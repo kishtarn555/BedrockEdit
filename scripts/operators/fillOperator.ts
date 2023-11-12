@@ -82,7 +82,7 @@ export default class OperatorFill implements Operator<FillParameters> {
         let z2 = Math.max(pos1.z, pos2.z);
         let area = (x2 - x1 + 1) * (y2 - y1 + 1) * (z2 - z1 + 1);
         let blocksChanged = 0;
-        let commit: Commit | undefined;
+        let commit: Commit = new Commit(`Fill operation`) ;
         try {
             let fors = new TickForeach(
                 (pos: Vector3) => {
@@ -102,7 +102,7 @@ export default class OperatorFill implements Operator<FillParameters> {
                     );
                 },
                 500,
-                (tick) => { commit = new Commit(`Fill operation (${tick})`) },
+                (_) => {commit = commit.splitCommitIfLengthIsExceeded()},
                 (_) => { History.AddCommit(commit!); }
             );
             // @ts-ignore
