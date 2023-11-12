@@ -27,13 +27,13 @@ export default class OperatorRedo implements Operator<RedoParameters> {
         if (commit == null) {
             return {
                 status: "error",
-                message: "There's not operations to redo in History"
+                message: {text:"There's not operations to redo in History"}
             }
         }
         
         return {
             status: "success",
-            message: `Redone: ${commit.message} (${History.getLength()}/${History.getCapacity()})`
+            message: {text:`Redone: ${commit.message} (${History.getLength()}/${History.getCapacity()})`}
         }
     
     

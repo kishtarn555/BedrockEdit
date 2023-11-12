@@ -1,4 +1,4 @@
-import { Player, system, world } from "@minecraft/server";
+import { Player, RawMessage, system, world } from "@minecraft/server";
 import OperatorFill from "../fillOperator";
 import OperatorLine from "../lineOperator";
 import OperatorRedo from "../redoOperator";
@@ -16,7 +16,15 @@ function logOperator(command: string, player: Player, response: OperatorResult) 
         "error": "§c",
         "warning": "§e"
     }[response.status];
-    const message = `[§9Bets§f] ${result}${response.message} `;
+    
+    const message:RawMessage =  {
+        rawtext:
+        [
+            {text:"[§9Bets§f] "},
+         {text:result},
+         response.message
+        ]
+    }
 
     player.sendMessage(message)
 

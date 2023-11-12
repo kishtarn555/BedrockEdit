@@ -96,14 +96,14 @@ export default class OperatorStack implements Operator<StackParameters> {
         if (this.workspace == null) {
             returner.breakAndReturn({
                 status: "error",
-                message: "There's no valid selection"
+                message: {text:"There's no valid selection"}
             });
             return;
         }
         if (this.workspace.getVolume() > MAX_STACK_AREA) {
             returner.breakAndReturn({
                 status: "error",
-                message: `The selection cannot be larger than ${MAX_STACK_AREA}`
+                message: {text:`The selection cannot be larger than ${MAX_STACK_AREA}`}
             });
             return
         }

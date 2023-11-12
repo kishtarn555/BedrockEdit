@@ -35,7 +35,7 @@ export class OperatorFlood implements Operator<FloodParameters> {
             if (validation !== "success") {
                 resolve({
                     status: "error",
-                    message: validation
+                    message: {text:validation}
                 });
                 return;
             }
@@ -64,7 +64,7 @@ export class OperatorFlood implements Operator<FloodParameters> {
                 resolve(
                     {
                         status: "success",
-                        message: `flood filled ${changes} blocks`
+                        message: {text:`flood filled ${changes} blocks`}
 
                     }
                 );

@@ -36,14 +36,14 @@ export default class OperatorLine implements Operator<FillParameters> {
         if (!this.playerVariables.isValidWorkspace()) {
             return {
                 status: "error",
-                message: "Positions are not valid"
+                message: {text:"Positions are not valid"}
             }
     
         }
         if (!this.playerVariables.isBlockPlacerValid()) {
             return {
                 status: "error",
-                message: "No block picked"
+                message: {text:"No block picked"}
             }
     
         }
@@ -82,7 +82,7 @@ export default class OperatorLine implements Operator<FillParameters> {
             History.AddCommit(commit);
             return {
                 status: length === blocksChanged?"success":"warning",
-                message: `Line placed, set ${blocksChanged}/${length} blocks`
+                message: {text:`Line placed, set ${blocksChanged}/${length} blocks`}
             }
             
         } catch (error) {
@@ -92,7 +92,7 @@ export default class OperatorLine implements Operator<FillParameters> {
         }
         return {
             status: "error",
-            message: "THIS PATH SHOULD NOT BE ACCESSED, CONTACT DEV"
+            message: {text:"THIS PATH SHOULD NOT BE ACCESSED, CONTACT DEV"}
         }
     
     }

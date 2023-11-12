@@ -27,13 +27,13 @@ export default class OperatorUndo implements Operator<UndoParameters> {
         if (commit == null) {
             return {
                 status: "error",
-                message: "There's not operations to undo in History"
+                message: {text:"There's not operations to undo in History"}
             }
         }
         
         return {
             status: "success",
-            message: `Undone: ${commit.message} [${commit.part}] (${History.getLength()}/${History.getCapacity()})`
+            message: {text:`Undone: ${commit.message} [${commit.part}] (${History.getLength()}/${History.getCapacity()})`}
         }
     
     

@@ -36,7 +36,7 @@ export default class OperatorFill implements Operator<FillParameters> {
             
             return { 
                 status: 'error', 
-                message: `Fill operator stopped: ${error}` 
+                message: {text:`Fill operator stopped: ${error}`}
             };
         }
 
@@ -54,14 +54,14 @@ export default class OperatorFill implements Operator<FillParameters> {
         if (this.workspace == null) {
             returner.breakAndReturn({
                 status: "error",
-                message: "There's no valid workspace"
+                message: {text:"There's no valid workspace"}
             });
             return;
         }
         if (!this.playerVariables.isBlockPlacerValid()) {
             returner.breakAndReturn({
                 status: "error",
-                message: "Select the proper blocks"
+                message: {text:"Select the proper blocks"}
             });
             return;
         }
@@ -118,20 +118,20 @@ export default class OperatorFill implements Operator<FillParameters> {
             if (error === "cancelled") {
                 return {
                     status:"error",
-                    message: "Run was cancelled"
+                    message: {text:"Run was cancelled"}
                 }
             }
             if (error === "busy") {
                 return {
                     status:"error",
-                    message: "Scheduler was busy"
+                    message: {text:"Scheduler was busy"}
                 }
             }
             world.sendMessage((error as Error).stack ?? "lol")
         }
         return ({
             status: area === blocksChanged ? "success" : "warning",
-            message: `Filled ${blocksChanged}/${area}`
+            message: {text:`Filled ${blocksChanged}/${area}`}
         });
 
     }
