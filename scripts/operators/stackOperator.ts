@@ -159,13 +159,10 @@ export default class OperatorStack implements Operator<StackParameters> {
         
         const tickFor = new TickForeach(
             (_)=> {
-                    for (let i =0; i < copies; i++) {
-                        this.player.runCommand(
-                        `clone ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${corner.x} ${corner.y} ${corner.z} ${this.parameters.mask!}`
-                    );
-
-                    corner =  this.getNextCorner(corner, x2-x1+1, y2-y1+1, z2-z1+1);
-                }
+                this.player.runCommand(
+                    `clone ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${corner.x} ${corner.y} ${corner.z} ${this.parameters.mask!}`
+                );
+                corner =  this.getNextCorner(corner, x2-x1+1, y2-y1+1, z2-z1+1);                
             },
             1,
         );
