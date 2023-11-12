@@ -10,6 +10,7 @@ import { OperatorReturner } from "./operatorReturner"
 import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 import { StackOperatorArgsModal } from "../modals/StackOperatorArgsModal"
 import { range } from "../tickScheduler/range"
+import {getPlayerDirection} from "../playerUtils"
 export interface StackParameters {
     mask?: "replace" | "masked",
     direction?: Direction,
@@ -41,7 +42,7 @@ export default class OperatorStack implements Operator<StackParameters> {
             this.parameters.direction == null ||
             this.parameters.mask == null
         ) {
-            const modal = new StackOperatorArgsModal();
+            const modal = new StackOperatorArgsModal(getPlayerDirection(this.player));
             this.parameters = await modal.show(this.player);
         }
     }

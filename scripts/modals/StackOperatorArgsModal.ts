@@ -4,8 +4,12 @@ import { Direction, Player } from "@minecraft/server";
 
 export class StackOperatorArgsModal {
     modal: ModalFormData
-    constructor() {
+    constructor(defaultDirection?:Direction) {
         this.modal = new ModalFormData();
+        let direction = 0;
+        if (defaultDirection!=null) {
+            direction = this.getDefaultDirection(defaultDirection);
+        }
         this.modal
             .title(
                 {
@@ -24,7 +28,8 @@ export class StackOperatorArgsModal {
                     { translate: "bets.util.directions.east" },
                     { translate: "bets.util.directions.south" },
                     { translate: "bets.util.directions.west" },
-                ]
+                ],
+                direction
             )
             .dropdown(
                 {
@@ -43,7 +48,16 @@ export class StackOperatorArgsModal {
                 1
             )
     }
-
+    private getDefaultDirection(direction:Direction):number {
+        switch(direction) {
+            case Direction.Up: return 0;
+            case Direction.Down: return 1;
+            case Direction.North: return 2;
+            case Direction.East: return 3;
+            case Direction.South: return 4;
+            case Direction.West: return 5;
+        }
+    }
 
     async show(player: Player): Promise<StackParameters> {
         const response = await this.modal.show(player);
