@@ -6,8 +6,9 @@
         "request": "attach",
         "name": "Wait for Minecraft Debug Connections",
         "mode": "listen",
-        "localRoot": "${workspaceFolder}/",
-        "generatedSourceRoot": "${workspaceFolder}/",
+        "localRoot": "${workspaceFolder}/scripts/",
+        "generatedSourceRoot": "${workspaceFolder}/build/behavior_packs/bedrockedits/scripts/",
+        "sourceMapRoot": "${workspaceFolder}/build/behavior_packs/_bedrocKEditsDebug",
         "port": 19144
       }
     ]
