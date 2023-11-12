@@ -23,13 +23,17 @@ export default class BlockPlacingModeSelectionModal {
             );
     }
 
-    show(player:Player) {
-        this.modal.show(player).then(response=> {
-            let mode = response.formValues![0] as number
-            BetsBlockPlacer.operationMode = mode;
+    show(player:Player) :Promise<void> {
+        return new Promise((resolve, reject)=> {
+            this.modal.show(player).then(response=> {
+                let mode = response.formValues![0] as number
+                BetsBlockPlacer.operationMode = mode;
 
-            player.sendMessage(["[§9Bets§f] ", MODES[mode]  ]) //FIXME Add translation key
-        }).catch(error=> {})
+                player.sendMessage(["[§9Bets§f] ", MODES[mode]  ]) //FIXME Add translation key
+            })
+            .then(value=>resolve(value))
+            .catch(error=> reject(error))
+        });
     }
 
 }
