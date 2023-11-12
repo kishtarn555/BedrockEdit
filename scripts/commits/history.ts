@@ -5,7 +5,7 @@ const UndoHistory:Commit[] = []
 
 const RedoHistory:Commit[] = []
 
-let MaxHistoryLength = 20000;
+let MaxHistoryLength = 100000;
 let UndoLength=0;
 export default class History {
 
