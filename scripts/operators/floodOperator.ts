@@ -2,7 +2,7 @@ import { Dimension, Player, Vector3 } from "@minecraft/server";
 import { Operator } from "./operator";
 import {OperatorResult} from "./operatorResult";
 import { PlayerVariablesConnection } from "../dataVariables/playerVariables";
-import { ChainReturner, TickForeach } from "../tickScheduler/scheduler";
+import { ChainReturner, TickForeach, TickTimeForeach } from "../tickScheduler/scheduler";
 import { Commit } from "../commits/commit";
 import History from "../commits/history";
 import { BlockPlacingMode } from "../blockPlacer";
@@ -46,9 +46,9 @@ export class OperatorFlood implements Operator<FloodParameters> {
             let commit: Commit = new Commit(`Flood operation`) ;
             let previousCommit:Commit | null = null;
             let changes = 0
-            let flood = new TickForeach<Vector3>(
+            let flood = new TickTimeForeach<Vector3>(
                 (location) => { changes+=blockPlacer.placeBlock(this.player!.dimension.getBlock(location)!, this.pVars.getBlock1()!, this.pVars.getBlock2(), commit) },
-                500,
+                250,
                 (_) => {
                     [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();
                     if (previousCommit != null) {
