@@ -39,7 +39,7 @@ export class StackOperatorArgsModal {
             .slider(
                 { translate:"bets.operator.stack.copies_count" },
                 1,
-                50,
+                30,
                 1,
                 1
             )
