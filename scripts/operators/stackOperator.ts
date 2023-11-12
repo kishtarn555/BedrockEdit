@@ -10,11 +10,13 @@ import { OperatorReturner } from "./operatorReturner"
 import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 import { StackOperatorArgsModal } from "../modals/StackOperatorArgsModal"
 import { range } from "../tickScheduler/range"
-import {getPlayerDirection} from "../playerUtils"
+import { getPlayerDirection } from "../playerUtils"
 export interface StackParameters {
     mask?: "replace" | "masked",
     direction?: Direction,
     copies?: number
+    useOffset?: boolean,
+    offset?: Vector3,
 }
 
 const MAX_STACK_AREA = 524288; // This comes from Minecraft clone limit
@@ -70,17 +72,43 @@ export default class OperatorStack implements Operator<StackParameters> {
         this.workspace!.load();
     }
     private async validate(returner: OperatorReturner) {
-        if (this.parameters.direction == null) {
+        if (this.parameters.useOffset == null) {
             returner.breakAndReturn({
                 status: "error",
-                message: { translate: "bets.util.operator.no_argument", with: ["bets.operator.stack.direction"] }
+                message: {
+                    translate: "bets.util.operator.no_argument",
+                    with: { translate: "bets.operator.stack.useOffset" }
+                }
+            });
+            return;
+        }
+        if (this.parameters.useOffset && this.parameters.offset == null){
+            returner.breakAndReturn({
+                status: "error",
+                message: {
+                    translate: "bets.util.operator.no_argument",
+                    with: { translate: "bets.operator.stack.offset" }
+                }
+            });
+            return;
+        }
+        if (!this.parameters.useOffset && this.parameters.direction == null) {
+            returner.breakAndReturn({
+                status: "error",
+                message: {
+                    translate: "bets.util.operator.no_argument",
+                    with: { translate: "bets.operator.stack.direction" }
+                }
             });
             return;
         }
         if (this.parameters.mask == null) {
             returner.breakAndReturn({
                 status: "error",
-                message: { translate: "bets.util.operator.no_argument", with: ["bets.operator.stack.mask"] }
+                message: {
+                    translate: "bets.util.operator.no_argument",
+                    with: { translate: "bets.operator.stack.mask" }
+                }
             });
             return;
         }
@@ -97,14 +125,14 @@ export default class OperatorStack implements Operator<StackParameters> {
         if (this.workspace == null) {
             returner.breakAndReturn({
                 status: "error",
-                message: {text:"There's no valid selection"}
+                message: { text: "There's no valid selection" }
             });
             return;
         }
         if (this.workspace.getVolume() > MAX_STACK_AREA) {
             returner.breakAndReturn({
                 status: "error",
-                message: {text:`The selection cannot be larger than ${MAX_STACK_AREA}`}
+                message: { text: `The selection cannot be larger than ${MAX_STACK_AREA}` }
             });
             return
         }
@@ -112,10 +140,18 @@ export default class OperatorStack implements Operator<StackParameters> {
     }
 
     private getNextCorner(previous: Vector3, xs: number, ys: number, zs: number): Vector3 {
+        let next = previous;
+        if (this.parameters.useOffset!) {
+            next.x += this.parameters.offset!.x;
+            next.y += this.parameters.offset!.y;
+            next.z += this.parameters.offset!.z;
+
+            return next;
+        }
+
         if (this.parameters.direction == null) {
             throw new Error("Direction is not sent (?)");
         }
-        let next = previous;
         switch (this.parameters.direction) {
             case Direction.Up:
                 next.y += ys;
@@ -155,15 +191,15 @@ export default class OperatorStack implements Operator<StackParameters> {
         pos1 = { x: x1, y: y1, z: z1 };
         pos2 = { x: x2, y: y2, z: z2 };
 
-        let corner = this.getNextCorner(pos1, x2-x1+1, y2-y1+1, z2-z1+1);
+        let corner = this.getNextCorner(pos1, x2 - x1 + 1, y2 - y1 + 1, z2 - z1 + 1);
         let copies = this.parameters.copies!;
-        
+
         const tickFor = new TickForeach(
-            (_)=> {
+            (_) => {
                 this.player.runCommand(
                     `clone ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${corner.x} ${corner.y} ${corner.z} ${this.parameters.mask!}`
                 );
-                corner =  this.getNextCorner(corner, x2-x1+1, y2-y1+1, z2-z1+1);                
+                corner = this.getNextCorner(corner, x2 - x1 + 1, y2 - y1 + 1, z2 - z1 + 1);
             },
             1,
         );
@@ -171,8 +207,8 @@ export default class OperatorStack implements Operator<StackParameters> {
         await tickFor.runOnIterable(range(copies));
 
         return {
-            status:"success",
-            message:{translate:"bets.operator.stack.message.success"}
+            status: "success",
+            message: { translate: "bets.operator.stack.message.success" }
         }
 
 

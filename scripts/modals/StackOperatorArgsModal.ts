@@ -1,15 +1,21 @@
 import { ModalFormData } from "@minecraft/server-ui";
 import { StackParameters } from "../operators/stackOperator";
 import { Direction, Player } from "@minecraft/server";
+import { getInteger } from "./modalsUtil";
 
 export class StackOperatorArgsModal {
     modal: ModalFormData
-    constructor(defaultDirection?:Direction) {
+    directionModal: ModalFormData
+    offsetModal: ModalFormData
+    constructor(defaultDirection?: Direction) {
         this.modal = new ModalFormData();
+        this.directionModal = new ModalFormData();
+        this.offsetModal = new ModalFormData();
         let direction = 0;
-        if (defaultDirection!=null) {
+        if (defaultDirection != null) {
             direction = this.getDefaultDirection(defaultDirection);
         }
+
         this.modal
             .title(
                 {
@@ -17,20 +23,7 @@ export class StackOperatorArgsModal {
                     with: { rawtext: [{ translate: "bets.operator.stack.name" }] }
 
                 })
-            .dropdown(
-                {
-                    translate: "bets.operator.stack.direction"
-                },
-                [
-                    { translate: "bets.util.directions.up" },
-                    { translate: "bets.util.directions.down" },
-                    { translate: "bets.util.directions.north" },
-                    { translate: "bets.util.directions.east" },
-                    { translate: "bets.util.directions.south" },
-                    { translate: "bets.util.directions.west" },
-                ],
-                direction
-            )
+
             .dropdown(
                 {
                     translate: "bets.operator.stack.mode"
@@ -40,16 +33,55 @@ export class StackOperatorArgsModal {
                     { translate: "bets.operator.stack.mode.replace" }
                 ]
             )
-            .slider(
+            .textField(
                 { translate: "bets.operator.stack.copies_count" },
-                1,
-                30,
-                1,
-                1
+                {translate:"bets.util.integer"}
             )
+            .dropdown(
+                { translate: "bets.operator.stack.offset_type" },
+                [
+                    { translate: "bets.operator.stack.use_direction" },
+                    { translate: "bets.operator.stack.use_offset" }
+                ]
+            );
+
+        this.offsetModal
+            .title({
+                translate: "bets.operator.stack.offset"
+            })
+            .textField(
+                { translate: "bets.operator.stack.dx" },
+                {translate:"bets.util.integer"}
+            )
+            .textField(
+                { translate: "bets.operator.stack.dy" },
+                {translate:"bets.util.integer"}
+            )
+            .textField(
+                { translate: "bets.operator.stack.dz" },
+                {translate:"bets.util.integer"}
+            );
+
+        this.directionModal
+            .title({
+                translate: "bets.operator.stack.offset"
+            })
+            .dropdown(
+                { translate: "bets.operator.stack.direction" },
+                [
+                    { translate: "bets.util.directions.up" },
+                    { translate: "bets.util.directions.down" },
+                    { translate: "bets.util.directions.north" },
+                    { translate: "bets.util.directions.east" },
+                    { translate: "bets.util.directions.south" },
+                    { translate: "bets.util.directions.west" },
+                ],
+                direction
+            );
+
     }
-    private getDefaultDirection(direction:Direction):number {
-        switch(direction) {
+    private getDefaultDirection(direction: Direction): number {
+        switch (direction) {
             case Direction.Up: return 0;
             case Direction.Down: return 1;
             case Direction.North: return 2;
@@ -60,27 +92,45 @@ export class StackOperatorArgsModal {
     }
 
     async show(player: Player): Promise<StackParameters> {
-        const response = await this.modal.show(player);
-        if (response.canceled) {
+        let params: StackParameters = {}
+
+
+        const modalResponse = await this.modal.show(player);
+        if (modalResponse.canceled) {
             throw "cancelled";
         }
-        const direction = [
-            Direction.Up,
-            Direction.Down,
-            Direction.North,
-            Direction.East,
-            Direction.South,
-            Direction.West
-        ][response.formValues![0] as number];
-        const mode = ["masked", "replace"]
-        [response.formValues![1] as number] as "masked" | "replace";
-        const copies = response.formValues![2] as number;
 
-        return {
-            direction: direction,
-            mask: mode,
-            copies: copies,
+        params.mask = ["masked", "replace"][modalResponse.formValues![0] as number] as "masked" | "replace";
+        params.copies = getInteger(modalResponse.formValues![1] as string, [1, 100]);
+        const useOffset = modalResponse.formValues![2] === 1;
+        params.useOffset = useOffset;
+        if (!useOffset) {
+            const directionResponse = await this.directionModal.show(player);
+            if (directionResponse.canceled) {
+                throw "cancelled"
+            }
+            params.direction = [
+                Direction.Up,
+                Direction.Down,
+                Direction.North,
+                Direction.East,
+                Direction.South,
+                Direction.West
+            ][directionResponse.formValues![0] as number];
+        } else {
+            const offsetResponse = await this.offsetModal.show(player);
+            if (offsetResponse.canceled) {
+                throw "cancelled"
+            }
+            let x = getInteger(offsetResponse.formValues![0] as string);
+            let y = getInteger(offsetResponse.formValues![1] as string);
+            let z = getInteger(offsetResponse.formValues![2] as string);
+            if (x != null && y!=null && z != null) {
+                params.offset = {x:x,y:y,z:z};
+            }
         }
+
+        return params;
 
 
 
