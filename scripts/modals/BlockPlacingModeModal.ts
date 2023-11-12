@@ -26,6 +26,11 @@ export default class BlockPlacingModeSelectionModal {
     show(player:Player) :Promise<void> {
         return new Promise((resolve, reject)=> {
             this.modal.show(player).then(response=> {
+                if (response.canceled) {
+                    reject(response.cancelationReason);
+                    return;
+                }
+
                 let mode = response.formValues![0] as number
                 BetsBlockPlacer.operationMode = mode;
 

@@ -7,6 +7,7 @@ import History from "../commits/history"
 import Workspace from "../workspace"
 import { ChainReturner, TickChain, TickForeach } from "../tickScheduler/scheduler"
 import { OperatorReturner } from "./operatorReturner"
+import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 interface FillParameters {
 
 }
@@ -26,7 +27,19 @@ export default class OperatorFill implements Operator<FillParameters> {
         
     }
     
-    execute(): Promise<OperatorResult> {
+    async execute(): Promise<OperatorResult> {
+        const chooseBlockPlacingMode = new BlockPlacingModeSelectionModal();
+        
+        try {
+            await chooseBlockPlacingMode.show(this.player)
+        } catch(error) {
+            
+            return { 
+                status: 'error', 
+                message: `Fill operator stopped: ${error}` 
+            };
+        }
+
         return new TickChain<undefined, OperatorResult>()
         .first(this.validate.bind(this))
         .finally(this.fill.bind(this))
