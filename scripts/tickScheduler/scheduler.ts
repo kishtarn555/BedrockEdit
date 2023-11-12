@@ -205,3 +205,74 @@ export class TickForeach<T> {
         resolve();
     }
 }
+
+
+export class TickTimeForeach<T> {
+    /**
+     * A function that processes an element of the iterator.
+     */
+    processor: (arg: T) => void
+    /**
+     * A function called at the start of each Batch.
+     */
+    onStartBatch:((tick:number)=>void)|undefined
+    /**
+     * A function called at the end of each Batch.
+     */
+    onEndBatch:((tick:number)=>void)|undefined
+    /*
+     * Maximum length of an batch in ms
+    */
+    batchDuration: number
+    private startTick:number
+    /**
+     * Creates an instance of TickForeach.
+     * 
+     * @param {(arg: T) => void} processor - A function that processes an element of the iterator.
+     * @param {number} batchDuration - Maximum duration of a batch in ms.
+     * @param {((tick: number) => void) | undefined} [onStartBatch] - A function called at the start of each Batch.
+     * @param {((tick: number) => void) | undefined} [onEndBatch] - A function called at the end of each Batch.
+     */
+    constructor(
+        processor: (arg: T) => void, 
+        batchDuration: number,
+        onStartBatch?:(tick:number)=>void, 
+        onEndBatch?:(tick:number)=>void
+    ) {
+        this.batchDuration = batchDuration;
+        this.processor = processor
+        this.onStartBatch = onStartBatch
+        this.onEndBatch = onEndBatch
+        this.startTick = 0
+    }
+    
+    /**
+     * Runs the processor on elements from the provided iterable in batches.
+     * 
+     * @param {Iterable<T>} iterable - The iterable containing elements to be processed.
+     * @returns {Promise<void>} A promise that resolves when all elements have been processed.
+     */
+    async runOnIterable(iterable: Iterable<T>) {
+        this.startTick=system.currentTick;
+        return new Promise<void>(
+            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve)
+        );
+    }
+
+    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
+        const startTime = Date.now(); // Record the start time
+        let cursor = iterator.next();
+        this.onStartBatch?.(system.currentTick-this.startTick)
+        while (!cursor.done) {
+            this.processor(cursor.value);
+            if (Date.now() - startTime >= this.batchDuration) {                
+                this.onEndBatch?.(system.currentTick-this.startTick)
+                system.run(() => this.nextBatch(iterator, resolve)); //Run remaining items on next tick
+                return;
+            }
+            cursor = iterator.next();
+        }
+        this.onEndBatch?.(system.currentTick-this.startTick);
+        resolve();
+    }
+}

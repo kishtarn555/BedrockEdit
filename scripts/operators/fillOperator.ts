@@ -5,7 +5,7 @@ import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
 import History from "../commits/history"
 import Workspace from "../workspace"
-import { ChainReturner, TickChain, TickForeach } from "../tickScheduler/scheduler"
+import { ChainReturner, TickChain, TickForeach, TickTimeForeach } from "../tickScheduler/scheduler"
 import { OperatorReturner } from "./operatorReturner"
 import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 interface FillParameters {
@@ -85,7 +85,7 @@ export default class OperatorFill implements Operator<FillParameters> {
         let commit: Commit = new Commit(`Fill operation`) ;
         let previousCommit:Commit | null = null;
         try {
-            let fors = new TickForeach(
+            let fors = new TickTimeForeach(
                 (pos: Vector3) => {
 
                     // world.getDimension(dimension).runCommand(`setblock ${point.x} ${point.y} ${point.z} ${blockStatement}`);
@@ -102,7 +102,7 @@ export default class OperatorFill implements Operator<FillParameters> {
                         commit
                     );
                 },
-                500,
+                250,
                 (_) => {
                     
                     [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();

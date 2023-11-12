@@ -37,13 +37,15 @@ export default class BlockPlacer {
 
     }
 
-    placeBlock(block: Block,  primary:BlockPermutation, secondary?:BlockPermutation, commit?:Commit) {
-        if (!block.isValid()) return;
+    placeBlock(block: Block,  primary:BlockPermutation, secondary?:BlockPermutation, commit?:Commit)  :number{
+        if (!block.isValid()) return 0;
         let previousState = block.permutation
         let nextState = this.setBlockPermutation(block, primary, secondary);
         if (nextState!==previousState) {
             commit?.saveChange(block.dimension,block.location, previousState, nextState);
+            return 1;
         }
+        return 0;
     }
 
 

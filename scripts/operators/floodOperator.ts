@@ -40,18 +40,26 @@ export class OperatorFlood implements Operator<FloodParameters> {
                 return;
             }
             const previousMode = this.pVars.getBlockPlacer().operationMode;
-            this.pVars.getBlockPlacer().operationMode = BlockPlacingMode.normal;
+            const blockPlacer =  this.pVars.getBlockPlacer();
+            blockPlacer.operationMode = BlockPlacingMode.normal;
 
-            let commit = new Commit("flood");
+            let commit: Commit = new Commit(`Flood operation`) ;
+            let previousCommit:Commit | null = null;
             let changes = 0
             let flood = new TickForeach<Vector3>(
-                (location) => { changes+=commit.placeBlock(this.player!.dimension, location, this.pVars) },
+                (location) => { changes+=blockPlacer.placeBlock(this.player!.dimension.getBlock(location)!, this.pVars.getBlock1()!, this.pVars.getBlock2(), commit) },
                 500,
-                (tick) => commit = new Commit(`Flood [${tick}]`),
-                (_) => { History.AddCommit(commit) }
+                (_) => {
+                    [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();
+                    if (previousCommit != null) {
+                        History.AddCommit(previousCommit);
+                        previousCommit = null;
+                    }
+                },
+                (_) => { }
             ).runOnIterable(this.floodFill());
             flood.then(() => {
-
+                History.AddCommit(commit);
                 this.pVars.getBlockPlacer().operationMode = previousMode;
                 resolve(
                     {
