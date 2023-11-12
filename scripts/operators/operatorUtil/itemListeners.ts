@@ -7,6 +7,7 @@ import { Operator } from "../operator";
 import { PlayerVariablesConnection } from "../../dataVariables/playerVariables";
 import { OperatorFlood } from "../floodOperator";
 import { OperatorResult } from "../operatorResult";
+import OperatorStack from "../stackOperator";
 
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
@@ -32,6 +33,7 @@ function attachOperatorSimpleItemListener() {
             case "bets:operator_undo": operator = new OperatorUndo(player,{}); break;
             case "bets:operator_redo": operator = new OperatorRedo(player,{}); break;
             case "bets:operator_fill": operator = new OperatorFill(player,{}); break;
+            case "bets:operator_stack": operator = new OperatorStack(player,{}); break;
             default: return;
         }
         

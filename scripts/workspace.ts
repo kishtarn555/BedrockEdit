@@ -38,6 +38,16 @@ export default class Workspace {
         return true;
     }
 
+    getVolume() {
+        const x1 = Math.min(this.corner1.x, this.corner2.x);
+        const y1 = Math.min(this.corner1.y, this.corner2.y);
+        const z1 = Math.min(this.corner1.z, this.corner2.z);
+        const x2 = Math.max(this.corner1.x, this.corner2.x);
+        const y2 = Math.max(this.corner1.y, this.corner2.y);
+        const z2 = Math.max(this.corner1.z, this.corner2.z);
+        return (x2-x1+1)*(y2-y1+1)*(z2-z1+1);
+    }
+
     * iterable() {
         const x1 = Math.min(this.corner1.x, this.corner2.x);
         const y1 = Math.min(this.corner1.y, this.corner2.y);

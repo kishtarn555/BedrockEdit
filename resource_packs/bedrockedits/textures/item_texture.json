@@ -34,6 +34,9 @@
 		},
 		"bets_flood": {
 			"textures":"textures/items/bets_flood_fill"
+		},
+		"bets_stack": {
+			"textures":"textures/items/bets/operators/stack"
 		}
 	}
 }
