@@ -153,6 +153,8 @@ export class TickForeach<T> {
     */
     batchSize: number
     private startTick:number
+    private busy:boolean
+    private cancelled:boolean
     /**
      * Creates an instance of TickForeach.
      * 
@@ -168,10 +170,12 @@ export class TickForeach<T> {
         onEndBatch?:(tick:number)=>void
     ) {
         this.batchSize = batchSize;
-        this.processor = processor
-        this.onStartBatch = onStartBatch
-        this.onEndBatch = onEndBatch
-        this.startTick = 0
+        this.processor = processor;
+        this.onStartBatch = onStartBatch;
+        this.onEndBatch = onEndBatch;
+        this.startTick = 0;
+        this.busy=false;
+        this.cancelled=false;
     }
     
     /**
@@ -181,21 +185,38 @@ export class TickForeach<T> {
      * @returns {Promise<void>} A promise that resolves when all elements have been processed.
      */
     async runOnIterable(iterable: Iterable<T>) {
+        if (this.busy) {
+            return new Promise<void>((_, reject)=>reject("busy"));
+        }
+        this.busy=true;
+        this.cancelled=false;
         this.startTick=system.currentTick;
         return new Promise<void>(
-            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve)
+            (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve, reject)
         );
     }
 
-    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void) {
+    /**
+     * Cancels the run it's currently processing
+     */
+    cancelRun() {
+        this.cancelled=true;
+    }
+
+    private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void, reject:(reason:any)=>void) {
         let iter = 0;
         let cursor = iterator.next();
         this.onStartBatch?.(system.currentTick-this.startTick)
         while (!cursor.done) {
+            if (this.cancelled) {
+                reject("cancelled");
+                this.busy=false;
+                return;
+            }
             this.processor(cursor.value);
             if (iter >= this.batchSize) {                
                 this.onEndBatch?.(system.currentTick-this.startTick)
-                system.run(() => this.nextBatch(iterator, resolve)); //Run remaining items on next tick
+                system.run(() => this.nextBatch(iterator, resolve,reject)); //Run remaining items on next tick
                 return;
             }
             cursor = iterator.next();
@@ -203,6 +224,7 @@ export class TickForeach<T> {
         }
         this.onEndBatch?.(system.currentTick-this.startTick);
         resolve();
+        this.busy=false;
     }
 }
 
@@ -268,12 +290,14 @@ export class TickTimeForeach<T> {
             (resolve, reject) => this.nextBatch(iterable[Symbol.iterator](), resolve,reject)
         );
     }
+
     /**
      * Cancels the run it's currently processing
      */
     cancelRun() {
         this.cancelled=true;
     }
+
     private nextBatch(iterator: Iterator<T, any, undefined>, resolve: (value: void) => void, reject:(reason:any)=>void) {
         const startTime = Date.now(); // Record the start time
         let cursor = iterator.next();
