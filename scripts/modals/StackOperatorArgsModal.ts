@@ -51,15 +51,18 @@ export class StackOperatorArgsModal {
             })
             .textField(
                 { translate: "bets.operator.stack.dx" },
-                {translate:"bets.util.integer"}
+                {translate:"bets.util.integer"},
+                "0"
             )
             .textField(
                 { translate: "bets.operator.stack.dy" },
-                {translate:"bets.util.integer"}
+                {translate:"bets.util.integer"},
+                "0"
             )
             .textField(
                 { translate: "bets.operator.stack.dz" },
-                {translate:"bets.util.integer"}
+                {translate:"bets.util.integer"},
+                "0"
             );
 
         this.directionModal
