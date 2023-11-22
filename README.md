@@ -1,5 +1,5 @@
 
-BedrockEdits is a add on that adds powerfool editing tools for minecraft bedrock.
+BedrockEdits is a add on that adds powerfool editing tools for minecraft bedrock. It **does not use experimental features**
 
 It adds the option to select a workspace, manipulate the workspace with operators, and some more useful tools
 
