@@ -42,3 +42,6 @@ bets.operator.stack.use_direction=Usar dirección
 bets.operator.stack.dx=Δx
 bets.operator.stack.dy=Δy
 bets.operator.stack.dz=Δz
+bets.modal.home.title=Menú principal §l§9 Bets
+bets.modal.home.hot_bar=Navegación de barra rápida
+bets.modal.home.preferences=PReferencias
