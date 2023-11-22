@@ -37,6 +37,9 @@
 		},
 		"bets_stack": {
 			"textures":"textures/items/bets/operators/stack"
+		},
+		"bets_menu": {
+			"textures":"texutres/items/bets/bets_menu"
 		}
 	}
 }
