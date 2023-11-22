@@ -103,7 +103,6 @@ export default class OperatorFill implements Operator<FillParameters> {
                     );
                 },
                 250,
-                (_) => {},
                 (_) => {
                     
                     [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();
@@ -113,7 +112,8 @@ export default class OperatorFill implements Operator<FillParameters> {
                     }
                 }
             );
-            await fors.runOnIterable(this.workspace!.iterable())
+            await fors.runOnIterable(this.workspace!.iterable());
+            History.AddCommit(commit);
         } catch (error) {
             if (error === "cancelled") {
                 return {
