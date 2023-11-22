@@ -199,7 +199,7 @@ export default class OperatorStack implements Operator<StackParameters> {
         let iter=0;
         const tickFor = new TickForeach(
             (_) => {
-                recordArea = new MemoryArea(this.player.dimension, pos1, pos2);
+                recordArea = new MemoryArea(this.player.dimension, corner, {x:corner.x+width-1,y:corner.y+height-1,z:corner.z+depth-1});
                 recordArea.record();
                 this.player.runCommand(
                     `clone ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${corner.x} ${corner.y} ${corner.z} ${this.parameters.mask!}`

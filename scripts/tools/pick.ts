@@ -30,6 +30,7 @@ function pickAir(arg:ItemUseBeforeEvent) {
     if (system.currentTick < nextPickUse ) return;
     nextPickUse = system.currentTick + PICK_DELAY;
     if (arg.itemStack?.typeId==="bets:picker_blue") {
+        console.warn("This is being run")
         BetsBlocks.setBlock1(BlockPermutation.resolve("minecraft:air"));
         return;
     }
