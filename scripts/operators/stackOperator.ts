@@ -11,6 +11,7 @@ import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 import { StackOperatorArgsModal } from "../modals/StackOperatorArgsModal"
 import { range } from "../tickScheduler/range"
 import { getPlayerDirection } from "../playerUtils"
+import { MemoryArea } from "../commits/memoryArea"
 export interface StackParameters {
     mask?: "replace" | "masked",
     direction?: Direction,
@@ -191,15 +192,23 @@ export default class OperatorStack implements Operator<StackParameters> {
         pos1 = { x: x1, y: y1, z: z1 };
         pos2 = { x: x2, y: y2, z: z2 };
 
-        let corner = this.getNextCorner(pos1, x2 - x1 + 1, y2 - y1 + 1, z2 - z1 + 1);
+        const [width,height,depth] = [ x2 - x1 + 1, y2 - y1 + 1, z2 - z1 + 1];
+        let corner = this.getNextCorner(pos1,width,height, depth);
         let copies = this.parameters.copies!;
-
+        let recordArea:MemoryArea;
+        let iter=0;
         const tickFor = new TickForeach(
             (_) => {
+                recordArea = new MemoryArea(this.player.dimension, pos1, pos2);
+                recordArea.record();
                 this.player.runCommand(
                     `clone ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${corner.x} ${corner.y} ${corner.z} ${this.parameters.mask!}`
                 );
-                corner = this.getNextCorner(corner, x2 - x1 + 1, y2 - y1 + 1, z2 - z1 + 1);
+                for (const commit of recordArea.getDifferences(`Stack ${iter}`)) {
+                    History.AddCommit(commit);
+                }
+                corner = this.getNextCorner(corner,width,height, depth);
+                iter++;
             },
             1,
         );

@@ -7,10 +7,10 @@ export class MemoryArea {
     maxPos: Vector3;
     memory: Record<string, BlockPermutation | undefined>; // You can adjust the type based on what you want to store
 
-    constructor(dimension: Dimension, minPos: Vector3, maxPos: Vector3) {
+    constructor(dimension: Dimension, pos1: Vector3, pos2: Vector3) {
         this.dimension = dimension;
-        this.minPos = minPos;
-        this.maxPos = maxPos;
+        this.minPos = { x: Math.min(pos1.x, pos2.x), y: Math.min(pos1.y, pos2.y), z: Math.min(pos1.z, pos2.z) };
+        this.maxPos = { x: Math.max(pos1.x, pos2.x), y: Math.max(pos1.y, pos2.y), z: Math.max(pos1.z, pos2.z) };;
         this.memory = {}; // Initialize memory as an empty object
     }
 
@@ -28,8 +28,8 @@ export class MemoryArea {
         }
     }
 
-    getDifferences(commitMessage:string) :Commit[]{
-        const commits:Commit[] = []
+    getDifferences(commitMessage: string): Commit[] {
+        const commits: Commit[] = []
         let currentCommit = new Commit(commitMessage);
         for (let x = this.minPos.x; x <= this.maxPos.x; x++) {
             for (let y = this.minPos.y; y <= this.maxPos.y; y++) {
@@ -58,5 +58,5 @@ export class MemoryArea {
         commits.push(currentCommit);
         return commits;
     }
-    
+
 }
