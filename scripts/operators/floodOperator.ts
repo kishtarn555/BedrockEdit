@@ -105,7 +105,7 @@ export class OperatorFlood implements Operator<FloodParameters> {
         if (!this.pVars.isBlockPlacerValid()) {
             return "No valid Block placer";
         }
-        if (this.parameters.dimension.getBlock(this.parameters.location)===this.pVars.getBlock1()) {
+        if (this.parameters.dimension.getBlock(this.parameters.location)?.permutation===this.pVars.getBlock1()) {
             return "Cannot replace a block with the same block";
         }
         return "success";
