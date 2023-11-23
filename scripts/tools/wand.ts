@@ -1,6 +1,7 @@
 import {world, ScriptEventCommandMessageAfterEvent, Player, system, Direction, Vector3} from "@minecraft/server"
 import { BetsCoords } from "../variables";
 import { CommandResponse } from "../commands/syntaxHelper";
+import { getPlayerSession } from "../session/playerSessionRegistry";
 
  
 let wandNextUse = -1
@@ -34,6 +35,8 @@ function attachWandListener() {
         arg.cancel = true;
         if (system.currentTick < wandNextUse) return;
         wandNextUse = system.currentTick+WAND_COOLDOWN;
+        const selection = getPlayerSession(arg.source.name).selection;
+        const dimension = arg.source.dimension;
         let location = arg.block.location;
         let offset = GetDirectionOffset(arg.blockFace);
         offset = {
@@ -42,11 +45,11 @@ function attachWandListener() {
             z:location.z + offset.z
         }
         if (arg.itemStack?.typeId==="bets:wand_red") {
-            BetsCoords.setPos2(offset);
+            selection.setSecondaryAnchor(dimension, offset);
         } else if (arg.itemStack?.typeId==="bets:wand_blue") {
-            BetsCoords.setPos1(offset);
+            selection.setMainAnchor(dimension,offset);
         }  else {        
-            BetsCoords.setPos2(location)
+            selection.setSecondaryAnchor(dimension, location)
         }
     });
 
@@ -55,16 +58,18 @@ function attachWandListener() {
         if (!arg.itemStack?.typeId.startsWith("bets:wand")) {
             return;
         }
-               
+        const selection = getPlayerSession(arg.source.name).selection;
+        const dimension = arg.source.dimension;
+
         arg.cancel = true;
         if (system.currentTick < wandNextUse) return;
         wandNextUse = system.currentTick+WAND_COOLDOWN;
         let location = arg.source.location;
         
         if (arg.itemStack?.typeId==="bets:wand_red") {
-            BetsCoords.setPos2(location);
+            selection.setSecondaryAnchor(dimension,location);
         } else if (arg.itemStack?.typeId==="bets:wand_blue") {
-            BetsCoords.setPos1(location);
+            selection.setMainAnchor(dimension,location);
         }
     });
 
@@ -72,14 +77,16 @@ function attachWandListener() {
         if (!arg.itemStack?.typeId.startsWith("bets:wand")) {
             return;
         }
-        
+        const selection = getPlayerSession(arg.player.name).selection;
+        const dimension = arg.player.dimension;
+        const location = arg.block.location;
         arg.cancel = true;
         if (system.currentTick < wandNextBreak) return;
         wandNextBreak = system.currentTick+WAND_COOLDOWN;
         if (arg.itemStack?.typeId==="bets:wand" || arg.itemStack?.typeId==="bets:wand_blue") {
-            BetsCoords.setPos1(arg.block.location)
+            selection.setMainAnchor(dimension, location)
         } else if (arg.itemStack?.typeId==="bets:wand_red") {
-            BetsCoords.setPos2(arg.block.location)
+            selection.setSecondaryAnchor(dimension, location)
         }
     });
 
