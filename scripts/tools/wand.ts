@@ -1,6 +1,4 @@
 import {world, ScriptEventCommandMessageAfterEvent, Player, system, Direction, Vector3} from "@minecraft/server"
-import { BetsCoords } from "../variables";
-import { CommandResponse } from "../commands/syntaxHelper";
 import { getPlayerSession } from "../session/playerSessionRegistry";
 
  
@@ -89,38 +87,6 @@ function attachWandListener() {
             selection.setSecondaryAnchor(dimension, location)
         }
     });
-
-}
-
-
-function giveWandScriptEvent(event:ScriptEventCommandMessageAfterEvent) : CommandResponse{
-    if (event.sourceEntity == null) {
-        return {
-            commandStatus:"error",
-            message: "A wand can only be given to the player"
-        };
-    }
-    if (!(event.sourceEntity instanceof Player)) {
-        return {
-            commandStatus:"error",
-            message: "A wand can only be given to the player"
-        };
-    }
-    let player = event.sourceEntity as Player;
-    try {
-        let count = player.runCommand("give @s bets:wand").successCount
-        return {
-            commandStatus: count === 1? "successful":"noexec",
-            message: count === 1? "gave wand":"failed to give wand"
-        }
-    } finally {
-        return {
-            commandStatus: "error",
-            message: "Error giving wand"
-        }
-    }
-    
-
 
 }
 

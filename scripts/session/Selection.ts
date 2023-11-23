@@ -22,9 +22,9 @@ export class AreaSelection {
     }
 
 
-    getDimension(): Dimension | undefined {
+    getDimension(): Dimension {        
         if (!this.isValid()) {
-            return undefined;
+            throw new Error("Cannot access an invalid selection");
         }
         return this.mainAnchor!.dimension;
     }
@@ -45,9 +45,9 @@ export class AreaSelection {
             return undefined;
         }
         return {
-            x: Math.abs(this.mainAnchor.location.x),
-            y: Math.abs(this.mainAnchor.location.y),
-            z: Math.abs(this.mainAnchor.location.z),
+            x: Math.floor(this.mainAnchor.location.x),
+            y: Math.floor(this.mainAnchor.location.y),
+            z: Math.floor(this.mainAnchor.location.z),
         }
     }
 
@@ -67,10 +67,26 @@ export class AreaSelection {
             return undefined;
         }
         return {
-            x: Math.abs(this.secondaryAnchor.location.x),
-            y: Math.abs(this.secondaryAnchor.location.y),
-            z: Math.abs(this.secondaryAnchor.location.z),
+            x: Math.floor(this.secondaryAnchor.location.x),
+            y: Math.floor(this.secondaryAnchor.location.y),
+            z: Math.floor(this.secondaryAnchor.location.z),
         };
     }
+
+    getChunkCount():number  {
+        if (!this.isValid()) {
+            throw new Error("Cannot access an invalid selection");
+        }
+        let chunk1 = {
+            x: Math.floor(this.mainAnchor!.location.x/16),
+            z: Math.floor(this.mainAnchor!.location.z/16)
+        }
+        let chunk2 = {
+            x: Math.floor(this.secondaryAnchor!.location.x/16),
+            z: Math.floor(this.secondaryAnchor!.location.z/16),
+        }
+
+        return (Math.abs(chunk1.x-chunk2.x)+1)*(Math.abs(chunk1.z-chunk2.z)+1);
+     }
 
 }

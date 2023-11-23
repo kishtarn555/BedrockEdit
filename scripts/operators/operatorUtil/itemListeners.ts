@@ -4,10 +4,10 @@ import OperatorLine from "../lineOperator";
 import OperatorRedo from "../redoOperator";
 import OperatorUndo from "../undoOperator";
 import { Operator } from "../operator";
-import { PlayerVariablesConnection } from "../../dataVariables/playerVariables";
 import { OperatorFlood } from "../floodOperator";
 import { OperatorResult } from "../operatorResult";
 import OperatorStack from "../stackOperator";
+import { getPlayerSession } from "../../session/playerSessionRegistry";
 
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
@@ -60,9 +60,9 @@ function attachOperatorItemOnBlockListener() {
         if (!args.itemStack?.typeId.startsWith("bets:operator")) return;
         args.cancel = true;
         const player = args.source;
-        const pVars = new PlayerVariablesConnection(player);
-        if (!pVars.checkCooldown("operator_item")) return;
-        pVars.setCooldown("operator_item");
+        const session = getPlayerSession(player.name);
+        if (!session.checkCooldown("operator_item")) return;
+        session.setCooldown("operator_item");
         let operator:Operator<any>;
         switch (args.itemStack.typeId) {
             case "bets:operator_flood": 

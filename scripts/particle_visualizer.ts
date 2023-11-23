@@ -1,5 +1,5 @@
 import { world, MolangVariableMap, Vector3 } from "@minecraft/server"
-import { BetsCoords } from "./variables"
+import { PlayerSession } from "./session/playerSession";
 
 
 const offset = 0.45;
@@ -19,16 +19,15 @@ function getLineMoolang(x:number,y:number,z:number,offset_x:number) :MolangVaria
 function spawnLine(coords:Vector3, x:number, y:number, z:number, offset_x:number) {
     
     let overworld = world.getDimension("overworld");
-
-    try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(x,y,z,offset_x)); } catch { }
+    try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(x,y,z,offset_x)); } catch {  }
     try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(-x,-y,-z,offset_x)); } catch { }
 }
 
-export default function renderSelection() {
+export default function renderSelection(session:PlayerSession) {
 
     //FIXME: Deal with outside blocks
-    let tpos1 = BetsCoords.getPos1()
-    let tpos2 = BetsCoords.getPos2()
+    let tpos1 = session.selection.getMainAnchor()?.location
+    let tpos2 =  session.selection.getSecondaryAnchor()?.location
 
 
     let pos2Moolang = new MolangVariableMap()
@@ -68,9 +67,10 @@ export default function renderSelection() {
             );
         } catch { }
     }
-    if (!BetsCoords.isThereAValidWorkspace()) return;
-    let pos1 = BetsCoords.getPos1()!;
-    let pos2 = BetsCoords.getPos2()!;
+    if (!session.hasValidWorkspace()) return;
+    // console.warn("yes?");
+    let pos1 = session.selection.getMainAnchorBlockLocation()!;
+    let pos2 = session.selection.getSecondaryAnchorBlockLocation()!;
 
     pos1 = {
         x: Math.floor(pos1.x) + 0.5,

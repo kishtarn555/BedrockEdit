@@ -1,11 +1,12 @@
 import { Dimension, Player, Vector3 } from "@minecraft/server";
 import { Operator } from "./operator";
 import {OperatorResult} from "./operatorResult";
-import { PlayerVariablesConnection } from "../dataVariables/playerVariables";
 import { ChainReturner, TickForeach, TickTimeForeach } from "../tickScheduler/scheduler";
 import { Commit } from "../commits/commit";
 import History from "../commits/history";
-import { BlockPlacingMode } from "../blockPlacer";
+import BlockPlacer, { BlockPlacingMode } from "../blockPlacer";
+import { PlayerSession } from "../session/playerSession";
+import { getPlayerSession } from "../session/playerSessionRegistry";
 
 
 interface FloodParameters {
@@ -18,12 +19,12 @@ export class OperatorFlood implements Operator<FloodParameters> {
     requiresParameters: boolean = false; //I don't ko
     parameters: FloodParameters;
     player: Player;
-    pVars:PlayerVariablesConnection
+    session:PlayerSession
 
     constructor(player: Player,parameters:FloodParameters) {
         this.player = player;
         this.parameters = parameters
-        this.pVars = new PlayerVariablesConnection(player);
+        this.session = getPlayerSession(player.name);
 
     }
 
@@ -39,15 +40,13 @@ export class OperatorFlood implements Operator<FloodParameters> {
                 });
                 return;
             }
-            const previousMode = this.pVars.getBlockPlacer().operationMode;
-            const blockPlacer =  this.pVars.getBlockPlacer();
-            blockPlacer.operationMode = BlockPlacingMode.normal;
+            const blockPlacer =  new BlockPlacer(this.session.blockSelection, BlockPlacingMode.normal);
 
             let commit: Commit = new Commit(`Flood operation`) ;
             let previousCommit:Commit | null = null;
             let changes = 0
             let flood = new TickTimeForeach<Vector3>(
-                (location) => { changes+=blockPlacer.placeBlock(this.player!.dimension.getBlock(location)!, this.pVars.getBlock1()!, this.pVars.getBlock2(), commit) },
+                (location) => { changes+=blockPlacer.placeBlock(this.player!.dimension.getBlock(location)!,  commit) },
                 250,
                 (_) => {
                     [commit, previousCommit] = commit.splitCommitIfLengthIsExceeded();
@@ -60,7 +59,6 @@ export class OperatorFlood implements Operator<FloodParameters> {
             ).runOnIterable(this.floodFill());
             flood.then(() => {
                 History.AddCommit(commit);
-                this.pVars.getBlockPlacer().operationMode = previousMode;
                 resolve(
                     {
                         status: "success",
@@ -90,7 +88,7 @@ export class OperatorFlood implements Operator<FloodParameters> {
             let cur = stack.pop()!;
             for (let dt of dVector) {
                 let next: Vector3 = { x: cur.x + dt.x, y: cur.y + dt.y, z: cur.z + dt.z }
-                if (!this.pVars.getWorkspace()?.isInBound(next)) continue;
+                if (!this.session.getWorkspace()?.isInBound(next)) continue;
                 if (this.parameters.dimension.getBlock(next)?.permutation!==replacement) continue;
                 stack.push(next);
                 yield next;
@@ -99,13 +97,13 @@ export class OperatorFlood implements Operator<FloodParameters> {
     }
 
     private validate(): string {
-        if (!this.pVars.isValidWorkspace()) {
+        if (!this.session.hasValidWorkspace()) {
             return "No valid workspace defined";
         }
-        if (!this.pVars.isBlockPlacerValid()) {
+        if (!BlockPlacer.validateSelection(this.session.blockSelection, BlockPlacingMode.normal)) {
             return "No valid Block placer";
         }
-        if (this.parameters.dimension.getBlock(this.parameters.location)?.permutation===this.pVars.getBlock1()) {
+        if (this.parameters.dimension.getBlock(this.parameters.location)?.permutation===this.session.blockSelection.mainBlockPermutation) {
             return "Cannot replace a block with the same block";
         }
         return "success";

@@ -1,18 +1,25 @@
 import { Block, BlockPermutation } from "@minecraft/server";
 import { Commit } from "./commits/commit";
+import { BlockSelection } from "./session/BlockSelection";
 export default class BlockPlacer {
-    
-    isValid(primary?:BlockPermutation, secondary?:BlockPermutation) {
-        if (primary==null) return false;
-        if (this.operationMode == BlockPlacingMode.normal || this.operationMode == BlockPlacingMode.keep) {
-            return true;
-        }
-        return secondary!=null;
+    readonly selection:BlockSelection
+    readonly operationMode:BlockPlacingMode;
+
+    constructor (selection:BlockSelection, operatioNMode:BlockPlacingMode) {
+        this.selection = selection;
+        this.operationMode = operatioNMode;
     }
     
-    operationMode:BlockPlacingMode = BlockPlacingMode.normal
+    isValid() {
+        return BlockPlacer.validateSelection(this.selection, this.operationMode);
+    }
 
-    setBlockPermutation(block:Block, primary:BlockPermutation, secondary?:BlockPermutation) {
+    private setBlockPermutation(block:Block) {
+        const primary = this.selection.mainBlockPermutation;
+        const secondary = this.selection.secondaryBlockPermutation;
+        if (primary == null) {
+            throw new Error ("Primary block is not set");
+        }
         switch (this.operationMode) {
             case BlockPlacingMode.normal:
                 block.setPermutation(primary);
@@ -37,15 +44,31 @@ export default class BlockPlacer {
 
     }
 
-    placeBlock(block: Block,  primary:BlockPermutation, secondary?:BlockPermutation, commit?:Commit)  :number{
+    placeBlock(block: Block, commit?:Commit)  :number{
         if (!block.isValid()) return 0;
         let previousState = block.permutation
-        let nextState = this.setBlockPermutation(block, primary, secondary);
+        let nextState = this.setBlockPermutation(block);
         if (nextState!==previousState) {
             commit?.saveChange(block.dimension,block.location, previousState, nextState);
             return 1;
         }
         return 0;
+    }
+
+
+    static validateSelection(selection:BlockSelection, operationMode:BlockPlacingMode) :boolean{
+        const primary = selection.mainBlockPermutation;
+        const secondary = selection.secondaryBlockPermutation;
+        if (primary ==null) {
+            return false;
+        }
+        if (operationMode === BlockPlacingMode.normal || operationMode === BlockPlacingMode.keep) {
+            return true;
+        }
+        if (secondary == null) {
+            return false;
+        }
+        return true;
     }
 
 

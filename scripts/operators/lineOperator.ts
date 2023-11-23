@@ -1,5 +1,4 @@
 import { Dimension, Player, Vector3, world } from "@minecraft/server"
-import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
 import { OperatorResult } from "./operatorResult"
 import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
@@ -9,6 +8,9 @@ import { ChainReturner, TickChain, TickForeach } from "../tickScheduler/schedule
 import { OperatorReturner } from "./operatorReturner"
 import { FormRejectError } from "@minecraft/server-ui"
 import { plot3D } from "../BresenhamLine"
+import { PlayerSession } from "../session/playerSession"
+import { getPlayerSession } from "../session/playerSessionRegistry"
+import BlockPlacer from "../blockPlacer"
 interface FillParameters {
 
 }
@@ -17,14 +19,14 @@ export default class OperatorLine implements Operator<FillParameters> {
     requiresParameters: boolean = false
     parameters: FillParameters
     player: Player;
-    playerVariables: PlayerVariablesConnection
+    session:PlayerSession
     workspace: Workspace | undefined
 
     constructor(player: Player, parameters: FillParameters) {
         this.parameters = parameters;
         this.player = player;
-        this.playerVariables = new PlayerVariablesConnection(player);
-        this.workspace = this.playerVariables.getWorkspace();
+        this.session = getPlayerSession(player.name);
+        this.workspace = this.session.getWorkspace();
 
     }
 
@@ -33,14 +35,14 @@ export default class OperatorLine implements Operator<FillParameters> {
     }
 
     private run(): OperatorResult {
-        if (!this.playerVariables.isValidWorkspace()) {
+        if (!this.session.hasValidWorkspace()) {
             return {
                 status: "error",
                 message: {text:"Positions are not valid"}
             }
     
         }
-        if (!this.playerVariables.isBlockPlacerValid()) {
+        if (!BlockPlacer.validateSelection(this.session.blockSelection, this.session.blockPlacingMode)) {
             return {
                 status: "error",
                 message: {text:"No block picked"}
@@ -50,8 +52,8 @@ export default class OperatorLine implements Operator<FillParameters> {
         //NOTE: when fillblocks is released, we might want to upgrade to it 
         let result: OperatorResult
         try {
-            let pos1: Vector3 = this.playerVariables.getBlockPos1()!
-            let pos2: Vector3 = this.playerVariables.getBlockPos2()!
+            let pos1: Vector3 = this.session.selection.getMainAnchorBlockLocation()!
+            let pos2: Vector3 = this.session.selection.getSecondaryAnchorBlockLocation()!
     
             let points = plot3D(
                 pos1.x,
@@ -71,10 +73,8 @@ export default class OperatorLine implements Operator<FillParameters> {
                 //FIXME: Add arguments
                 let block = world.getDimension("overworld").getBlock(point)
                 if (block == null) continue;
-                this.playerVariables.getBlockPlacer().placeBlock(
+                this.session.getBlockPlacer().placeBlock(
                     block, 
-                    this.playerVariables.getBlock1()!,
-                    this.playerVariables.getBlock2(),
                     commit
                 );
                 blocksChanged++;

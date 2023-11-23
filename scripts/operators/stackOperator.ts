@@ -1,5 +1,4 @@
 import { Dimension, Direction, Player, Vector3, world } from "@minecraft/server"
-import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
 import { OperatorResult } from "./operatorResult"
 import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
@@ -12,6 +11,8 @@ import { StackOperatorArgsModal } from "../modals/StackOperatorArgsModal"
 import { range } from "../tickScheduler/range"
 import { getPlayerDirection } from "../playerUtils"
 import { MemoryArea } from "../commits/memoryArea"
+import { PlayerSession } from "../session/playerSession"
+import { getPlayerSession } from "../session/playerSessionRegistry"
 export interface StackParameters {
     mask?: "replace" | "masked",
     direction?: Direction,
@@ -27,14 +28,14 @@ export default class OperatorStack implements Operator<StackParameters> {
     requiresParameters: boolean = false
     parameters: StackParameters
     player: Player;
-    playerVariables: PlayerVariablesConnection
+    session: PlayerSession
     workspace: Workspace | undefined
 
     constructor(player: Player, parameters: StackParameters) {
         this.parameters = parameters;
         this.player = player;
-        this.playerVariables = new PlayerVariablesConnection(player);
-        this.workspace = this.playerVariables.getWorkspace();
+        this.session = getPlayerSession(player.name)
+        this.workspace = this.session.getWorkspace();
 
     }
 
@@ -177,8 +178,8 @@ export default class OperatorStack implements Operator<StackParameters> {
     }
 
     private async stack(returner: OperatorReturner): Promise<OperatorResult> {
-        let pos1: Vector3 = this.playerVariables.getBlockPos1()!
-        let pos2: Vector3 = this.playerVariables.getBlockPos2()!
+        let pos1: Vector3 = this.session.selection.getMainAnchorBlockLocation()!
+        let pos2: Vector3 = this.session.selection.getSecondaryAnchorBlockLocation()!
 
 
         //NOTE: This might need a bump after fillBlocks is added

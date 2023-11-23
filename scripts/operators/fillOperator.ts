@@ -1,5 +1,4 @@
 import { Dimension, Player, Vector3, world } from "@minecraft/server"
-import { PlayerVariablesConnection } from "../dataVariables/playerVariables"
 import { OperatorResult } from "./operatorResult"
 import { Operator } from "./operator"
 import { Commit } from "../commits/commit"
@@ -8,6 +7,8 @@ import Workspace from "../workspace"
 import { ChainReturner, TickChain, TickForeach, TickTimeForeach } from "../tickScheduler/scheduler"
 import { OperatorReturner } from "./operatorReturner"
 import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
+import { PlayerSession } from "../session/playerSession"
+import { getPlayerSession } from "../session/playerSessionRegistry"
 interface FillParameters {
 
 }
@@ -16,14 +17,14 @@ export default class OperatorFill implements Operator<FillParameters> {
     requiresParameters: boolean = false
     parameters: FillParameters
     player: Player;
-    playerVariables: PlayerVariablesConnection
+    session: PlayerSession
     workspace: Workspace | undefined
 
     constructor(player: Player, parameters: FillParameters) {
         this.parameters = parameters;
         this.player = player;
-        this.playerVariables = new PlayerVariablesConnection(player);
-        this.workspace = this.playerVariables.getWorkspace();
+        this.session = getPlayerSession(player.name);
+        this.workspace = this.session.getWorkspace();
         
     }
     
@@ -58,7 +59,7 @@ export default class OperatorFill implements Operator<FillParameters> {
             });
             return;
         }
-        if (!this.playerVariables.isBlockPlacerValid()) {
+        if (!this.session.getBlockPlacer().isValid()) {
             returner.breakAndReturn({
                 status: "error",
                 message: {text:"Select the proper blocks"}
@@ -69,8 +70,8 @@ export default class OperatorFill implements Operator<FillParameters> {
 
 
     private async fill(returner: OperatorReturner): Promise<OperatorResult> {
-        let pos1: Vector3 = this.playerVariables.getBlockPos1()!
-        let pos2: Vector3 = this.playerVariables.getBlockPos2()!
+        let pos1: Vector3 = this.session.selection.getMainAnchorBlockLocation()!
+        let pos2: Vector3 = this.session.selection.getSecondaryAnchorBlockLocation()!
 
 
         //NOTE: This might need a bump after fillBlocks is added
@@ -95,10 +96,8 @@ export default class OperatorFill implements Operator<FillParameters> {
                     let block = world.getDimension("overworld").getBlock(point)
                     if (block == null) return;
                     blocksChanged++;
-                    this.playerVariables.getBlockPlacer().placeBlock(
+                    this.session.getBlockPlacer().placeBlock(
                         block, 
-                        this.playerVariables.getBlock1()!,
-                        this.playerVariables.getBlock2(),
                         commit
                     );
                 },

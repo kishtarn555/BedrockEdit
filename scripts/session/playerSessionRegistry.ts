@@ -15,3 +15,16 @@ export function getPlayerSession(nameTag: string): PlayerSession {
 
     return newSession;
 }
+
+export function getAllPlayerSessions(): PlayerSession[] {
+    const sessions: PlayerSession[] = [];
+
+    // Iterate through the properties of playerSessions and push values to the array
+    for (const nameTag in playerSessions) {
+        if (playerSessions.hasOwnProperty(nameTag)) {
+            sessions.push(playerSessions[nameTag]);
+        }
+    }
+
+    return sessions;
+}

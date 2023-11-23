@@ -1,41 +1,57 @@
-import { world, system,BlockPermutation, ItemUseOnBeforeEvent, PlayerBreakBlockBeforeEvent, Dimension, ScriptEventCommandMessageAfterEvent, Vector3, ItemUseBeforeEvent } from "@minecraft/server";
-import { BetsBlocks } from "../variables";
+import { world, system, BlockPermutation, ItemUseOnBeforeEvent, PlayerBreakBlockBeforeEvent, Dimension, ScriptEventCommandMessageAfterEvent, Vector3, ItemUseBeforeEvent, Player } from "@minecraft/server";
+import { getPlayerSession } from "../session/playerSessionRegistry";
 
-let nextPickUse=-1;
-const PICK_DELAY=10;
+let nextPickUse = -1;
+const PICK_DELAY = 10;
 
-function pickBlock (arg:PlayerBreakBlockBeforeEvent | ItemUseOnBeforeEvent) {
+function pickBlock(arg: PlayerBreakBlockBeforeEvent | ItemUseOnBeforeEvent) {
     if (!arg.itemStack?.typeId.startsWith("bets:picker")) {
         return;
     }
-    arg.cancel=true;
-    if (system.currentTick < nextPickUse ) return;
+    arg.cancel = true;
+    if (system.currentTick < nextPickUse) return;
     nextPickUse = system.currentTick + PICK_DELAY;
+    const player = arg instanceof PlayerBreakBlockBeforeEvent ? arg.player : arg.source;
+    const session = getPlayerSession(player.name);
 
-    if (arg.itemStack?.typeId==="bets:picker_blue") {
-        BetsBlocks.setBlock1(arg.block.permutation);
+    if (arg.itemStack?.typeId === "bets:picker_blue") {
+        session.blockSelection.mainBlockPermutation = arg.block.permutation;
         return;
     }
-    if (arg.itemStack?.typeId==="bets:picker_red") {
-        BetsBlocks.setBlock2(arg.block.permutation);
+    if (arg.itemStack?.typeId === "bets:picker_red") {
+        session.blockSelection.secondaryBlockPermutation = arg.block.permutation;
         return;
     }
 }
 
-function pickAir(arg:ItemUseBeforeEvent) {
+
+function setMessage(player:Player, block:string,mainBlock:boolean=true) {
+    const selection = mainBlock?"Main":"Secondary";
+    player.sendMessage({
+        rawtext:[
+            {text:"[§9Bets§f] "},
+            {text:`§6${selection} block§r set to ${block}`}
+        ]
+    });
+}
+
+function pickAir(arg: ItemUseBeforeEvent) {
     if (!arg.itemStack?.typeId.startsWith("bets:picker")) {
         return;
     }
-    arg.cancel=true;
-    if (system.currentTick < nextPickUse ) return;
+    arg.cancel = true;
+    const player = arg.source;
+    const session = getPlayerSession(player.name);
+    if (system.currentTick < nextPickUse) return;
     nextPickUse = system.currentTick + PICK_DELAY;
-    if (arg.itemStack?.typeId==="bets:picker_blue") {
-        console.warn("This is being run")
-        BetsBlocks.setBlock1(BlockPermutation.resolve("minecraft:air"));
+    if (arg.itemStack?.typeId === "bets:picker_blue") {
+        setMessage(player, "air", true);
+        session.blockSelection.mainBlockPermutation = BlockPermutation.resolve("minecraft:air");
         return;
     }
-    if (arg.itemStack?.typeId==="bets:picker_red") {
-        BetsBlocks.setBlock2(BlockPermutation.resolve("minecraft:air"));
+    if (arg.itemStack?.typeId === "bets:picker_red") {
+        setMessage(player, "air", false);
+        session.blockSelection.secondaryBlockPermutation = BlockPermutation.resolve("minecraft:air");
         return;
     }
 }
