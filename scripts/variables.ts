@@ -7,9 +7,12 @@ let coordinates2:Vector3|undefined
 let block1:BlockPermutation | undefined
 let block2:BlockPermutation | undefined
 
-const MAX_CHUNK_AREA = 100
-const BetsBlockPlacer:BlockPlacer = new BlockPlacer()
-class BetsCoords {
+export const MAX_CHUNK_AREA = 100
+export const BetsBlockPlacer:BlockPlacer = new BlockPlacer()
+/**
+ * @deprecated
+ */
+export class BetsCoords {
 
     static setPos1(location:Vector3) {
         coordinates1 = location;
@@ -100,8 +103,12 @@ class BetsCoords {
     }
 }
 
+/**
+ * @deprecated
+ */
 
-class BetsBlocks {
+
+export class BetsBlocks {
 
     static setBlock1(block:BlockPermutation) {
         block1 = block;
@@ -132,5 +139,3 @@ class BetsBlocks {
     }
 }
 
-
-export { BetsCoords, BetsBlocks, BetsBlockPlacer, MAX_CHUNK_AREA }
