@@ -62,7 +62,7 @@ export class PlayerSession {
 
     checkCooldown(key:string):boolean {
         if (!this.cooldowns.has(key)) {
-            return false;
+            return true;
         }
         return this.cooldowns.get(key)! <= system.currentTick ;
     }
