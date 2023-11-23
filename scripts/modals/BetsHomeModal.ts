@@ -1,6 +1,7 @@
 import { Player } from "@minecraft/server"
 import { ActionFormData } from "@minecraft/server-ui"
-import { HotBar } from "./hotbarNav/hotbar"
+import { HotBar } from "../session/hotbar"
+import { SelectHotBarModal } from "./hotbarNav/BetsHotbarSelect.modal"
 
 
 export class BetsHomeModal {
@@ -33,6 +34,11 @@ export class BetsHomeModal {
         this.modal.show(player).then(
             response => {
                 if (response.canceled) {
+                    return;
+                }
+
+                if (response.selection! === 0) {
+                    new SelectHotBarModal(player).show();
                     return;
                 }
 

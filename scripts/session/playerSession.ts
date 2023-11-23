@@ -1,8 +1,9 @@
-import { Block, system } from "@minecraft/server";
+import { system } from "@minecraft/server";
 import { BlockSelection } from "./BlockSelection";
 import { AreaSelection } from "./Selection";
 import BlockPlacer, { BlockPlacingMode } from "../blockPlacer";
 import Workspace from "../workspace";
+import { HotBar } from "./hotbar";
 
 
 export interface SessionData {
@@ -18,7 +19,8 @@ export class PlayerSession {
     blockPlacingMode: BlockPlacingMode
 
     private cooldowns:Map<string, number>
-
+    private savedHotbars:HotBar[]
+    private previousHotBar:HotBar
 
     constructor(nameTag: string, data?: SessionData) {
         this.nameTag = nameTag;
@@ -26,6 +28,18 @@ export class PlayerSession {
         this.blockSelection = data?.blockSelection ?? new BlockSelection();
         this.blockPlacingMode = data?.blockPlacingMode ?? BlockPlacingMode.normal;
         this.cooldowns = new Map()
+        this.savedHotbars = [
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+            new HotBar(),
+        ];
+        this.previousHotBar = new HotBar();
 
     }
 
@@ -71,6 +85,17 @@ export class PlayerSession {
         this.cooldowns.set(key, system.currentTick+10);
     }
 
+    getHotBar(slot:number) {
+        return this.savedHotbars[slot];
+    }
+
+
+    getPreviousHotBar() {
+        return this.previousHotBar;
+    }
+    
+
+    
     
 
 }

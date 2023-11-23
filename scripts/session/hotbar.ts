@@ -4,9 +4,10 @@ import { EntityInventoryComponent, ItemStack, Player } from "@minecraft/server";
 
 export class HotBar {
     items: (ItemStack | undefined)[]
-
-    constructor() {
-        this.items = []
+    readonly isReadonly:boolean;
+    constructor(isReadonly:boolean=false, items?:(ItemStack|undefined)[]) {
+        this.items = items ?? []
+        this.isReadonly = isReadonly;
     }
 
     loadIntoPlayer(player:Player) {
@@ -17,6 +18,9 @@ export class HotBar {
     }
 
     saveFromPlayer(player:Player) {
+        if (this.isReadonly) {
+            throw new Error("Cannot save a read-only hotbar");
+        }
         this.items = []
         
         for (let i =0;  i < 9; i++){
