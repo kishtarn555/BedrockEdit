@@ -41,8 +41,8 @@
 		"bets_menu": {
 			"textures":"textures/items/bets/bets_menu"
 		},
-		"entrance_icon": {
-			"textures":"textures/items/bets/entrance_icon"
+		"hotbar_nav": {
+			"textures":"textures/items/bets/hotbar_nav"
 		}
 	}
 }
