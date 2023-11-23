@@ -44,3 +44,4 @@ bets.operator.stack.dz=Δz
 bets.modal.home.title=§l§9 Bets §rMain Menu
 bets.modal.home.hot_bar=Hotbar navigation
 bets.modal.home.preferences=Preferences
+bets.modal.home.panic=§cCancel current task
