@@ -15,10 +15,12 @@ function pickBlock(arg: PlayerBreakBlockBeforeEvent | ItemUseOnBeforeEvent) {
     const session = getPlayerSession(player.name);
 
     if (arg.itemStack?.typeId === "bets:picker_blue") {
+        setMessage(player, "a block", true);
         session.blockSelection.mainBlockPermutation = arg.block.permutation;
         return;
     }
     if (arg.itemStack?.typeId === "bets:picker_red") {
+        setMessage(player, "a block", false);
         session.blockSelection.secondaryBlockPermutation = arg.block.permutation;
         return;
     }
