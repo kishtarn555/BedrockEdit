@@ -58,8 +58,8 @@ export class PlayerSession {
             return undefined;
         }
         const response = new Workspace(
-            this.selection.getMainAnchor()!.location,
-            this.selection.getSecondaryAnchor()!.location,
+            this.selection.getMainAnchorBlockLocation()!,
+            this.selection.getSecondaryAnchorBlockLocation()!,
             this.selection.getDimension()!,
             this.nameTag + "_workspace"
         );
