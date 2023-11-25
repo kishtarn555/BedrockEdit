@@ -4,7 +4,7 @@
     "name": "Bedrock Edits",
     "description": "Provides tool for map making",
     "uuid": "88fc03a3-72a9-40cc-b3a9-f48711df69b5",
-    "version": [1, 0, 0],
+    "version": [1, 0, 1],
     "min_engine_version": [1, 20, 30]
   },
   "modules": [
@@ -13,14 +13,14 @@
       "language": "javascript",
       "type": "script",
       "uuid": "34f7b70d-8a43-4590-8b9f-bd0f8338426a",
-      "version": [1, 0, 0],
+      "version": [1, 0, 1],
       "entry": "scripts/main.js"
     },
     {
       "description": "Debug items",
       "type": "data",
       "uuid": "724c8b52-90f3-459b-9499-0d2de89ff74c",
-      "version": [1, 0, 0]
+      "version": [1, 0, 1]
     }  
   ],
   "dependencies": [
@@ -34,7 +34,7 @@
     },
     {
       "uuid": "e81d06a6-3fef-4d2a-82a2-fb4bb7f78ecd",
-      "version":[1,0,0]
+      "version":[1,0,1]
     }
   ]
 }
