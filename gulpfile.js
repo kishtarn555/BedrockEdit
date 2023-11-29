@@ -62,11 +62,11 @@ function compile_scripts() {
     )
     .pipe(
       sourcemaps.write("../../_" + bpfoldername + "Debug", {
-        destPath: bpfoldername + "/scripts/",
+        destPath: bpfoldername + "BP/scripts/",
         sourceRoot: "./../../../scripts/",
       })
     )
-    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "/scripts"));
+    .pipe(gulp.dest("build/behavior_packs/" + bpfoldername + "BP/scripts"));
 }
 
 const build = gulp.series(clean_build, copy_content, compile_scripts);
@@ -78,7 +78,7 @@ function clean_localmc(callbackFunction) {
     return;
   }
 
-  del([mcdir + "development_behavior_packs/" + bpfoldername, mcdir + "development_resource_packs/" + bpfoldername], {
+  del([mcdir + "development_behavior_packs/" + bpfoldername+"BP", mcdir + "development_resource_packs/" + bpfoldername+"RP"], {
     force: true,
   }).then(
     (value) => {
@@ -91,16 +91,16 @@ function clean_localmc(callbackFunction) {
 }
 
 function deploy_localmc_behavior_packs() {
-  console.log("Deploying to '" + mcdir + "development_behavior_packs/" + bpfoldername + "'");
+  console.log("Deploying to '" + mcdir + "development_behavior_packs/" + bpfoldername + "BP'");
   return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest(mcdir + "development_behavior_packs/" + bpfoldername));
+    .src(["build/behavior_packs/" + bpfoldername + "BP/**/*"])
+    .pipe(gulp.dest(mcdir + "development_behavior_packs/" + bpfoldername+"BP"));
 }
 
 function deploy_localmc_resource_packs() {
   return gulp
-    .src(["build/resource_packs/" + bpfoldername + "/**/*"])
-    .pipe(gulp.dest(mcdir + "development_resource_packs/" + bpfoldername));
+    .src(["build/resource_packs/" + bpfoldername + "RP/**/*"])
+    .pipe(gulp.dest(mcdir + "development_resource_packs/" + bpfoldername+"RP"));
 }
 
 function getTargetWorldPath() {

@@ -82,7 +82,7 @@ export class PlayerSession {
     }
 
     setCooldown(key:string) {
-        this.cooldowns.set(key, system.currentTick+10);
+        this.cooldowns.set(key, system.currentTick+4);
     }
 
     getHotBar(slot:number) {
