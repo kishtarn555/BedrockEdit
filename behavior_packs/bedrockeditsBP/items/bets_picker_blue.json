@@ -16,6 +16,7 @@
       "minecraft:icon": {  
         "texture": "bets_blue_picker"  
       },
+      "minecraft:liquid_clipped": true,
       "minecraft:display_name": {  
         "value": "bets.tools.picker.blue.item.name"  
       }  
