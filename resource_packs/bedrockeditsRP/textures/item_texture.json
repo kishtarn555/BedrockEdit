@@ -43,6 +43,12 @@
 		},
 		"hotbar_nav": {
 			"textures":"textures/items/bets/hotbar_nav"
+		},
+		"bets_save": {
+			"textures":"textures/items/bets/save"
+		},
+		"bets_load": {
+			"textures":"textures/items/bets/load"
 		}
 	}
 }
