@@ -13,7 +13,7 @@ export class HotBar {
     loadIntoPlayer(player:Player) {
         for (let i =0;  i < this.items.length; i++){
             const inventory = player.getComponent(EntityInventoryComponent.componentId) as EntityInventoryComponent;
-            inventory.container.setItem(i, this.items[i]);
+            inventory.container!.setItem(i, this.items[i]); //FIXME: Why can inventory.container be undefined?
         }
     }
 
@@ -25,7 +25,7 @@ export class HotBar {
         
         for (let i =0;  i < 9; i++){
             const inventory = player.getComponent(EntityInventoryComponent.componentId) as EntityInventoryComponent;
-            this.items.push(inventory.container.getItem(i)?.clone());
+            this.items.push(inventory.container!.getItem(i)?.clone()); //FIXME: Why can inventory.container be undefined?
         }
     }
 }
