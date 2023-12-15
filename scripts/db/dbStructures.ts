@@ -11,13 +11,17 @@ export function loadStructureRegister(identifier:string) : StructureSave {
 
 
 export function saveStructureRegister(identifier:string, structure:StructureSave) {
-    let structures:string[] = loadAllStructureIdentifiers();
-    structures.push(identifier);
-    db.loadString(JSON.stringify(structure));
-    db.loadString(JSON.stringify(structures));
+    try {
+        let structures:string[] = loadAllStructureIdentifiers();
+        structures.push(identifier);
+        db.saveString(`bets:struct.s.${identifier}`,    JSON.stringify(structure));
+        db.saveString("bets:structures",                JSON.stringify(structures));
+    } catch( error) {
+        console.error("[ERROR]",(error as Error).stack, structure)
+    }
     
 }
 
 export function loadAllStructureIdentifiers(): string[] {
-    return JSON.parse(db.loadString("bets:structures"));
+    return JSON.parse(db.loadString("bets:structures","[]"));
 }

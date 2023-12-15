@@ -3,4 +3,6 @@ export interface StructureSave {
     x_length:number,
     y_length:number,
     z_length:number,
+    dx:number,
+    dz:number
 }
