@@ -54,6 +54,14 @@ export default class Workspace {
         return true;
     }
     
+    getDimensions() {
+        return {
+            x:Math.abs(this.corner1.x-this.corner2.x),
+            y:Math.abs(this.corner1.y-this.corner2.y),
+            z:Math.abs(this.corner1.z-this.corner2.z),
+        }
+    }
+
     getVolume() {
         const x1 = Math.min(this.corner1.x, this.corner2.x);
         const y1 = Math.min(this.corner1.y, this.corner2.y);
