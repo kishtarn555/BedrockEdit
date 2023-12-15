@@ -8,6 +8,7 @@ import { OperatorFlood } from "../floodOperator";
 import { OperatorResult } from "../operatorResult";
 import OperatorStack from "../stackOperator";
 import { getPlayerSession } from "../../session/playerSessionRegistry";
+import { OperatorStructureSave } from "../saveOperator";
 
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
@@ -42,13 +43,22 @@ function attachOperatorSimpleItemListener() {
             case "bets:operator_redo": operator = new OperatorRedo(player,{}); break;
             case "bets:operator_fill": operator = new OperatorFill(player,{}); break;
             case "bets:operator_stack": operator = new OperatorStack(player,{}); break;
+            case "bets:operator_save": operator = new OperatorStructureSave(player,{}); break;
             default: return;
         }
         
         system.run(()=>{
             // operator.form();
-            operator.execute().then(response=>
-            logOperator(args.itemStack.typeId, args.source, response));
+            operator.execute()
+            .then(
+                response=>logOperator(args.itemStack.typeId, args.source, response)
+            )
+            .catch(
+                reason=>logOperator(args.itemStack.typeId, args.source, {
+                    message:{text:"Error 500"},
+                    status:"error"
+                })
+                );
         });
     });
     
