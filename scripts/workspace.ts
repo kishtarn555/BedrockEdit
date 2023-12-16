@@ -56,9 +56,9 @@ export default class Workspace {
     
     getDimensions() {
         return {
-            x:Math.abs(this.corner1.x-this.corner2.x),
-            y:Math.abs(this.corner1.y-this.corner2.y),
-            z:Math.abs(this.corner1.z-this.corner2.z),
+            x:Math.abs(this.corner1.x-this.corner2.x)+1,
+            y:Math.abs(this.corner1.y-this.corner2.y)+1,
+            z:Math.abs(this.corner1.z-this.corner2.z)+1,
         }
     }
 

@@ -9,6 +9,7 @@ import { OperatorResult } from "../operatorResult";
 import OperatorStack from "../stackOperator";
 import { getPlayerSession } from "../../session/playerSessionRegistry";
 import { OperatorStructureSave } from "../saveOperator";
+import { OperatorStructureLoad } from "../loadOperator";
 
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
@@ -17,14 +18,14 @@ function logOperator(command: string, player: Player, response: OperatorResult) 
         "error": "§c",
         "warning": "§e"
     }[response.status];
-    
-    const message:RawMessage =  {
+
+    const message: RawMessage = {
         rawtext:
-        [
-            {text:"[§9Bets§f] "},
-         {text:result},
-         response.message
-        ]
+            [
+                { text: "[§9Bets§f] " },
+                { text: result },
+                response.message
+            ]
     }
 
     player.sendMessage(message)
@@ -36,32 +37,36 @@ function attachOperatorSimpleItemListener() {
         if (!args.itemStack?.typeId.startsWith("bets:operator")) return;
         args.cancel = true;
         let player = args.source;
-        let operator:Operator<any>;
+        let operator: Operator<any>;
         switch (args.itemStack.typeId) {
-            case "bets:operator_line": operator = new OperatorLine(player,{}); break;
-            case "bets:operator_undo": operator = new OperatorUndo(player,{}); break;
-            case "bets:operator_redo": operator = new OperatorRedo(player,{}); break;
-            case "bets:operator_fill": operator = new OperatorFill(player,{}); break;
-            case "bets:operator_stack": operator = new OperatorStack(player,{}); break;
-            case "bets:operator_save": operator = new OperatorStructureSave(player,{}); break;
+            case "bets:operator_line": operator = new OperatorLine(player, {}); break;
+            case "bets:operator_undo": operator = new OperatorUndo(player, {}); break;
+            case "bets:operator_redo": operator = new OperatorRedo(player, {}); break;
+            case "bets:operator_fill": operator = new OperatorFill(player, {}); break;
+            case "bets:operator_stack": operator = new OperatorStack(player, {}); break;
+            case "bets:operator_save": operator = new OperatorStructureSave(player, {}); break;
+            case "bets:operator_load": operator = new OperatorStructureLoad(player, {}); break;
             default: return;
         }
-        
-        system.run(()=>{
+
+        system.run(() => {
             // operator.form();
             operator.execute()
-            .then(
-                response=>logOperator(args.itemStack.typeId, args.source, response)
-            )
-            .catch(
-                reason=>logOperator(args.itemStack.typeId, args.source, {
-                    message:{text:"Error 500"},
-                    status:"error"
-                })
+                .then(
+                    response => logOperator(args.itemStack.typeId, args.source, response)
+                )
+                .catch(
+                    reason => {
+                        logOperator(args.itemStack.typeId, args.source, {
+                            message: { text: "Error 500" },
+                            status: "error"
+                        });
+                        console.error((reason as Error).stack );
+                    }
                 );
         });
     });
-    
+
 }
 
 
@@ -73,20 +78,20 @@ function attachOperatorItemOnBlockListener() {
         const session = getPlayerSession(player.name);
         if (!session.checkCooldown("operator_item")) return;
         session.setCooldown("operator_item");
-        let operator:Operator<any>;
+        let operator: Operator<any>;
         switch (args.itemStack.typeId) {
-            case "bets:operator_flood": 
+            case "bets:operator_flood":
                 operator = new OperatorFlood(
-                    args.source, 
-                    {dimension:args.source.dimension,location:args.block.location}
-                ); 
+                    args.source,
+                    { dimension: args.source.dimension, location: args.block.location }
+                );
                 break;
             default: return;
         }
-        system.run(()=>{
+        system.run(() => {
             // operator.form();
-            operator.execute().then(response=>
-            logOperator(args.itemStack.typeId, args.source, response));
+            operator.execute().then(response =>
+                logOperator(args.itemStack.typeId, args.source, response));
         });
     });
 }

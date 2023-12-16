@@ -12,6 +12,7 @@ export class ChainReturner<ChainOut> {
     breakAndReturn(value: ChainOut) {
         this.resolver(value);
         this.resolved = true;
+        return value;
     }
 
     hasReturned() {

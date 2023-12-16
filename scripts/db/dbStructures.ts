@@ -4,8 +4,12 @@ import { db } from "./dbStringManager";
 //TODO: Analyze if this requires a RAM cache to avoid fetching from disk every time
 
 
-export function loadStructureRegister(identifier:string) : StructureSave {
-    return JSON.parse(db.loadString(`bets:struct.s.${identifier}`));
+export function loadStructureRegister(identifier:string) : StructureSave | undefined {
+    let entry = db.loadString(`bets:struct.s.${identifier}`,'NA')
+    if (entry==='NA') {
+        return undefined;
+    }
+    return JSON.parse(entry);
 }
 
 
