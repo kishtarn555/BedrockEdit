@@ -4,10 +4,13 @@ import { OperatorResult } from "./operatorResult";
 import { TickChain } from "../tickScheduler/scheduler";
 import { OperatorReturner } from "./operatorReturner";
 import Workspace from "../workspace";
+import History from "../commits/history"
+
 import { PlayerSession } from "../session/playerSession";
 import { getPlayerSession } from "../session/playerSessionRegistry";
 import { LoadOperatorArgsModal } from "../modals/LoadOperatorArgsModal";
 import { loadStructureRegister } from "../db/dbStructures";
+import { MemoryArea } from "../commits/memoryArea";
 
 export type StructureRotation = "0_degrees"|"90_degrees"|"180_degrees"|"270_degrees";
 export type StructureMirror = "none"|"x"|"z"|"xz";
@@ -126,24 +129,38 @@ export class OperatorStructureLoad implements Operator<LoadArguments> {
                 status:"error"
             });            
         }
+        
+        const rotated = (this.parameters.rotation != null && this.parameters.rotation == "90_degrees" ||this.parameters.rotation == "270_degrees" );
+        let relative_x = !rotated? structureData.x_length : structureData.z_length;
+        let relative_z = !rotated? structureData.z_length : structureData.x_length;
+
 
         if (corner2 != null) {
             if (corner2.x < corner1.x) {
-                corner1.x -= structureData.x_length-1;
+                corner1.x -= relative_x-1;
             }
             if (corner2.y < corner1.y) {
                 corner1.y -= structureData.y_length-1;
             }
             if (corner2.z < corner1.z) {
-                corner1.z -= structureData.z_length-1;
+                corner1.z -= relative_z-1;
             }
         }
+       
 
         const command = 
             `structure load ${this.parameters.name!} ${corner1.x} ${corner1.y} ${corner1.z} ${this.parameters.rotation} ${this.parameters.mirror}`
         
+        let recordArea = new MemoryArea(this.player.dimension, corner1, {
+            x:corner1.x+ relative_x -1,
+            y:corner1.y+ structureData.y_length-1,
+            z:corner1.z+ relative_z -1,
+        })
+        recordArea.record()
         let response = this.player.runCommand(command).successCount;
-
+        for (const commit of recordArea.getDifferences(`Load`)) {
+            History.AddCommit(commit);
+        }
         if (response === 1) {
             
             return {
