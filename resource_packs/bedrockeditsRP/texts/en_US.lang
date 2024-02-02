@@ -57,3 +57,9 @@ bets.operator.load.arg_rotation.name=Rotation
 bets.operator.load.arg_rotation.from_player=Relative to player
 bets.operator.load.arg_mirror.name=Mirror
 bets.operator.load_arg_mirror.none=None
+
+
+bets.commands.error.tooManyArgs=§c[Bets]§rToo many arguments, found '§e%1§r'
+bets.commands.pos.query.result=§a[Bets] §e%1§r: '§e%2§r'
+bets.commands.pos.query.notSet=§a[Bets] §e%1§r   is not set
+bets.commands.pos.set.result=§a[Bets] §e%1§r   §l is now §r'§e%2§r'

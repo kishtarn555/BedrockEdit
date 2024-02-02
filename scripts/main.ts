@@ -5,6 +5,8 @@ import renderSelection from "./particle_visualizer"
 import attachModalItemUseListeners from "./modals/itemAttachments";
 import attachOperatorItemListeners from "./operators/operatorUtil/itemListeners";
 import { getAllPlayerSessions } from "./session/playerSessionRegistry";
+import { attachCommandsListener } from "./console/commands";
+import { registerAllCommands } from "./console/registerCommands";
 
 const START_TICK = 100;
 
@@ -25,3 +27,6 @@ attachPickerItemUse();
 attachWandListener();
 attachOperatorItemListeners();
 attachModalItemUseListeners();
+
+registerAllCommands();
+attachCommandsListener();
