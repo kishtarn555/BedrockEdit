@@ -9,8 +9,9 @@ import { OperatorReturner } from "./operatorReturner"
 import BlockPlacingModeSelectionModal from "../modals/BlockPlacingModeModal"
 import { PlayerSession } from "../session/playerSession"
 import { getPlayerSession } from "../session/playerSessionRegistry"
+import { BlockPlacingMode } from "../blockPlacer"
 interface FillParameters {
-
+    mode?:"normal"|"keep"|"replace"|"loosely"
 }
 export default class OperatorFill implements Operator<FillParameters> {
 
@@ -27,8 +28,28 @@ export default class OperatorFill implements Operator<FillParameters> {
         this.workspace = this.session.getWorkspace();
         
     }
-    
-    async execute(): Promise<OperatorResult> {
+
+    async getParameters() {
+
+        if (this.parameters.mode != null) {
+            const session = getPlayerSession(this.player.name);
+            switch(this.parameters.mode) {
+                case "normal":
+                    session.blockPlacingMode = BlockPlacingMode.normal;
+                    break;
+                case "keep":
+                    session.blockPlacingMode = BlockPlacingMode.keep;
+                    break;
+                case "replace":
+                    session.blockPlacingMode = BlockPlacingMode.replaceExactly;
+                    break;                    
+                case "loosely":
+                    session.blockPlacingMode = BlockPlacingMode.replaceLoosely;
+                    break;
+            }
+            return;
+        }
+
         const chooseBlockPlacingMode = new BlockPlacingModeSelectionModal();
         
         try {
@@ -40,6 +61,10 @@ export default class OperatorFill implements Operator<FillParameters> {
                 message: {text:`Fill operator stopped: ${error}`}
             };
         }
+    }
+    
+    async execute(): Promise<OperatorResult> {
+        await this.getParameters();
 
         return new TickChain<undefined, OperatorResult>()
         .first(this.validate.bind(this))
