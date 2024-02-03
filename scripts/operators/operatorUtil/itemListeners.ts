@@ -48,27 +48,29 @@ function attachOperatorSimpleItemListener() {
             case "bets:operator_load": operator = new OperatorStructureLoad(player, {}); break;
             default: return;
         }
-
-        system.run(() => {
-            // operator.form();
-            operator.execute()
-                .then(
-                    response => logOperator(args.itemStack.typeId, args.source, response)
-                )
-                .catch(
-                    reason => {
-                        logOperator(args.itemStack.typeId, args.source, {
-                            message: { text: "Error 500" },
-                            status: "error"
-                        });
-                        console.error((reason as Error).stack );
-                    }
-                );
-        });
+        
+        runOperator(operator, args.itemStack.typeId, args.source);
     });
-
 }
 
+export function runOperator(operator:Operator<any>, commandId:string, source:Player) {
+    system.run(() => {
+        // operator.form();
+        operator.execute()
+            .then(
+                response => logOperator(commandId, source, response)
+            )
+            .catch(
+                reason => {
+                    logOperator(commandId, source, {
+                        message: { text: "Error 500" },
+                        status: "error"
+                    });
+                    console.error((reason as Error).stack );
+                }
+            );
+    });
+} 
 
 function attachOperatorItemOnBlockListener() {
     world.beforeEvents.itemUseOn.subscribe((args) => {
@@ -88,11 +90,7 @@ function attachOperatorItemOnBlockListener() {
                 break;
             default: return;
         }
-        system.run(() => {
-            // operator.form();
-            operator.execute().then(response =>
-                logOperator(args.itemStack.typeId, args.source, response));
-        });
+        runOperator(operator, args.itemStack.typeId, args.source);
     });
 }
 

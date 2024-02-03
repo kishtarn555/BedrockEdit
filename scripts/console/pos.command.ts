@@ -100,6 +100,25 @@ async function pos2exec(
 }
 
 
+async function clearSelectionExec(
+    player: Player,
+    positionalArgs : CommandArgsLiteral[],
+    optionalArgs : Map<string, CommandArgsLiteral>,
+    flags: string[]
+): Promise<CommandOutput> {
+    const session = getPlayerSession(player.nameTag);
+    session.selection.clear();
+
+
+    return {
+        message: {
+            translate:"bets.commands.cls.result"       
+        },
+        status:"success"
+    }
+}
+
+
 export const POS1COMMAND:Command = new Command(
     "pos1",
     ManPos1,
@@ -113,4 +132,10 @@ export const POS2COMMAND:Command = new Command(
     ManPos2,
     pos2exec,
     COMMAND_OPTIONS
+)
+
+export const CLS_COMMAND:Command = new Command(
+    "cls",
+    ManPos2,
+    clearSelectionExec
 )

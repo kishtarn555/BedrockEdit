@@ -89,4 +89,9 @@ export class AreaSelection {
         return (Math.abs(chunk1.x-chunk2.x)+1)*(Math.abs(chunk1.z-chunk2.z)+1);
      }
 
+     clear():void {
+        this.mainAnchor = undefined;
+        this.secondaryAnchor = undefined;
+     }
+
 }

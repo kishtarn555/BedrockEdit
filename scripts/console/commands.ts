@@ -204,7 +204,7 @@ async function parseCommand(commandIdentifier: string, args: string, source: Pla
         // We are paring an positional Argument.
         if ( command.positionalArguments.length <= positionalIndex) {
             return {
-                message:{translate:"bets.commands.error.tooManyArgs", with:{text:components[i]}},
+                message:{translate:"bets.commands.error.tooManyArgs", with:[components[i]]},
                 status:"parseError"
             }
         }
