@@ -119,6 +119,26 @@ async function clearSelectionExec(
 }
 
 
+
+async function SelectionBlockSizeExec(
+    player: Player,
+    positionalArgs : CommandArgsLiteral[],
+    optionalArgs : Map<string, CommandArgsLiteral>,
+    flags: string[]
+): Promise<CommandOutput> {
+    const session = getPlayerSession(player.nameTag);
+    session.selection
+
+
+    return {
+        message: {
+            translate:"bets.commands.cls.result"       
+        },
+        status:"success"
+    }
+}
+
+
 export const POS1COMMAND:Command = new Command(
     "pos1",
     ManPos1,
