@@ -89,6 +89,21 @@ export class AreaSelection {
         return (Math.abs(chunk1.x-chunk2.x)+1)*(Math.abs(chunk1.z-chunk2.z)+1);
      }
 
+     getBlockSize():Vector3 {
+        
+        if (!this.isValid()) {
+            throw new Error("Cannot access an invalid selection");
+        }
+        let b1 = this.getMainAnchorBlockLocation()!;
+        let b2 = this.getSecondaryAnchorBlockLocation()!;
+
+        return {
+            x: Math.abs(b1.x-b2.x)+1,
+            y: Math.abs(b1.y-b2.y)+1,
+            z: Math.abs(b1.z-b2.z)+1,
+        }
+     }
+
      clear():void {
         this.mainAnchor = undefined;
         this.secondaryAnchor = undefined;

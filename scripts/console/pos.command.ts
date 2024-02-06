@@ -127,12 +127,22 @@ async function SelectionBlockSizeExec(
     flags: string[]
 ): Promise<CommandOutput> {
     const session = getPlayerSession(player.nameTag);
-    session.selection
+
+    if (!session.selection.isValid()) {
+        return {
+            status:"runtimeError",
+            message:{translate:"bets.command.noSelection"}
+        }
+    }
+
+    let size = session.selection.getBlockSize();
+
 
 
     return {
         message: {
-            translate:"bets.commands.cls.result"       
+            translate:"bets.commands.sbs.result",
+            with: [`${size.x}`,`${size.y}`, `${size.z}`]
         },
         status:"success"
     }
@@ -158,4 +168,10 @@ export const CLS_COMMAND:Command = new Command(
     "cls",
     ManPos2,
     clearSelectionExec
+)
+
+export const SBS_COMMAND:Command = new Command(
+    "sbs",
+    "bet.command.sbs.man",
+    SelectionBlockSizeExec
 )
