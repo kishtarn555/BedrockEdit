@@ -29,6 +29,12 @@ export namespace db  {
             world.setDynamicProperty(`${head}.${itr}`, token);
             itr++;
         }
+        let current = world.getDynamicProperty(`${head}.${itr}`);
+        while (current != null) {
+            world.setDynamicProperty(`${head}.${itr}`, undefined);
+            itr++;
+            current = world.getDynamicProperty(`${head}.${itr}`);
+        }
     }
 }
 
