@@ -3,6 +3,7 @@ import { Command, CommandArgsLiteral, CommandOutput } from "../commands";
 import { runOperator } from "../../operators/operatorUtil/itemListeners";
 import { OperatorStructureSave } from "../../operators/saveOperator";
 import { OperatorStructureLoad } from "../../operators/loadOperator";
+import { loadAllStructureIdentifiers } from "../../db/dbStructures";
 
 async function saveExec(
     player: Player,
@@ -46,4 +47,30 @@ export const LOAD_COMMAND:Command = new Command(
     "load",
     "bets.command.load.man",
     loadExec,
+)
+
+
+
+async function listStructuresExec(
+    player: Player,
+    positionalArgs : CommandArgsLiteral[],
+    optionalArgs : Map<string, CommandArgsLiteral>,
+    flags: string[]
+): Promise<CommandOutput> {
+    console.warn("yo");
+    let list = loadAllStructureIdentifiers();
+    console.warn(list);
+    let str = JSON.stringify(list);
+    return {
+        status:"success",
+        message:{translate:"bets.command.list_structures", with:[str]}
+    }
+}
+
+
+
+export const STL_COMMAND:Command = new Command(
+    "stl",
+    "bets.command.stl.man",
+    listStructuresExec,
 )

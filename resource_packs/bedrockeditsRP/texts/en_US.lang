@@ -66,3 +66,5 @@ bets.commands.pos.set.result=§a[Bets] §e%1§r   §l is now §r'§e%2§r'
 
 bets.commands.cls.result=§a[Bets] Selection has been cleared
 bets.commands.sbs.result=§a[Bets]§r Selection size is§e (%1x, %2y, %3z) §r§l blocks
+
+bets.command.list_structures=§a[Bets]§r Structures are: §e%1
