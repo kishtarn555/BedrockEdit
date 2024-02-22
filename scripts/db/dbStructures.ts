@@ -18,6 +18,7 @@ export function saveStructureRegister(identifier:string, structure:StructureSave
     try {
         let structures:string[] = loadAllStructureIdentifiers();
         structures.push(identifier);
+        structures = Array.from(new Set(structures));
         db.saveString(`bets:struct.s.${identifier}`,    JSON.stringify(structure));
         db.saveString("bets:structures",                JSON.stringify(structures));
     } catch( error) {
