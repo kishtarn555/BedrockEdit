@@ -175,7 +175,7 @@ async function parseCommand(commandIdentifier: string, args: string, source: Pla
             }
             if (!command.optionalArguments.has(key)) {
                 return {
-                    message: { translate: "bets.commands.error.unknown_argument", with: { text: components[i] } },
+                    message: { translate: "bets.commands.error.unknown_argument", with: [ components[i] ] },
                     status: "parseError"
                 }
             }
@@ -185,7 +185,7 @@ async function parseCommand(commandIdentifier: string, args: string, source: Pla
             if (status === "error") {
                 return {
                     status:"parseError",
-                    message: { translate: "bets.commands.error.syntax_error", with: { text: components[i+jump] } }
+                    message: { translate: "bets.commands.error.syntax_error", with: [components[i+jump] ] }
                 }
             }
 

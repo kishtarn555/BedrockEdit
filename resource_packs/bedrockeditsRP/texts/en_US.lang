@@ -68,3 +68,9 @@ bets.commands.cls.result=§a[Bets] Selection has been cleared
 bets.commands.sbs.result=§a[Bets]§r Selection size is§e (%1x, %2y, %3z) §r§l blocks
 
 bets.command.list_structures=§a[Bets]§r Structures are: §e%1
+
+bets.command.structure_data=§a[Bets]§r Structure §l%1§r has data: §e%2
+bets.command.structure_data.unknown_identifier=§c[Bets]§r Structure §l%1§r not found
+
+
+bets.commands.error.unknown_argument=§c[Bets]§r Unknown argument §e%1
