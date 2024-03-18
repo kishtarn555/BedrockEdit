@@ -157,22 +157,24 @@ export class OperatorStructureLoad implements Operator<LoadArguments> {
             z:corner1.z+ relative_z -1,
         })
         recordArea.record()
-        let response = this.player.runCommand(command).successCount;
-        for (const commit of recordArea.getDifferences(`Load`)) {
-            History.AddCommit(commit);
-        }
-        if (response === 1) {
+        let response = this.player.runCommandAsync(command).then(res=> {
+            for (const commit of recordArea.getDifferences(`Load`)) {
+                History.AddCommit(commit);
+            }
+            if (res.successCount === 1) {
             
-            return {
-                message: { translate: "bets.operator.load.message.success" },
-                status: "success"                
-            }
-        } else {
-            return {
-                message: { translate: "bets.operators.load.message.failed"},
-                status:"error"
-            }
-        }
+                return {
+                    message: { translate: "bets.operator.load.message.success" },
+                    status: "success"                
+                } as OperatorResult
+            } else {
+                return {
+                    message: { translate: "bets.operators.load.message.failed"},
+                    status:"error"
+                } as OperatorResult
+            } 
+        });
+        return response;
     }
 
 }
