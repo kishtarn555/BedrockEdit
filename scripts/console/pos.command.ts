@@ -8,7 +8,10 @@ const ManPos2 = "commands.pos.2.man";
 
 const COMMAND_OPTIONS:CommandOptions =  {
     optionalArguments: new Map<string, CommandArgType>([
-            ["set", "coordinates"]
+            ["set", "coordinates"],
+            ["x", "float"],
+            ["y", "float"],
+            ["z", "float"],
     ])
 }
 
@@ -20,9 +23,32 @@ async function pos1exec(
 ): Promise<CommandOutput> {
     const session = getPlayerSession(player.nameTag);
     const selection = session.selection;
+
+    let changed = false;
+    let coords = session.selection.getMainAnchor()?.location || {x:0,y:0,z:0};
     if (optionalArgs.has("set")) {
-        let coords = optionalArgs.get("set") as Vector3;
+        coords = optionalArgs.get("set") as Vector3;
+        changed=true;
+    }
+    
+    if (optionalArgs.has("x")) {
+        coords.x += optionalArgs.get("x") as number;
+        changed=true;
+    }
+    
+    if (optionalArgs.has("y")) {
+        coords.y += optionalArgs.get("y") as number;
+        changed=true;
+    }
+    if (optionalArgs.has("z")) {
+        coords.z += optionalArgs.get("z") as number;
+        changed=true;
+    }
+    
+    
+    if (changed) {
         selection.setMainAnchor(player.dimension, coords);
+        
         let position = `§6[  ${coords.x}, ${coords.y}, ${coords.z} ]@${player.dimension.id} §r`
         return {
             status:"success",
@@ -64,9 +90,32 @@ async function pos2exec(
 ): Promise<CommandOutput> {
     const session = getPlayerSession(player.nameTag);
     const selection = session.selection;
+
+    let changed = false;
+    let coords = session.selection.getSecondaryAnchor()?.location || {x:0,y:0,z:0};
     if (optionalArgs.has("set")) {
-        let coords = optionalArgs.get("set") as Vector3;
-        selection.setSecondaryAnchor(player.dimension, coords);
+        coords = optionalArgs.get("set") as Vector3;
+        changed=true;
+    }
+    
+    if (optionalArgs.has("x")) {
+        coords.x += optionalArgs.get("x") as number;
+        changed=true;
+    }
+    
+    if (optionalArgs.has("y")) {
+        coords.y += optionalArgs.get("y") as number;
+        changed=true;
+    }
+    if (optionalArgs.has("z")) {
+        coords.z += optionalArgs.get("z") as number;
+        changed=true;
+    }
+    
+    
+    if (changed) {
+        selection.setMainAnchor(player.dimension, coords);
+        
         let position = `§6[  ${coords.x}, ${coords.y}, ${coords.z} ]@${player.dimension.id} §r`
         return {
             status:"success",
