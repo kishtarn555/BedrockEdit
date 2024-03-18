@@ -47,7 +47,7 @@ export default class OperatorFill implements Operator<FillParameters> {
                     session.blockPlacingMode = BlockPlacingMode.replaceLoosely;
                     break;
             }
-            return;
+            return true;
         }
 
         const chooseBlockPlacingMode = new BlockPlacingModeSelectionModal();
@@ -56,16 +56,19 @@ export default class OperatorFill implements Operator<FillParameters> {
             await chooseBlockPlacingMode.show(this.player)
         } catch(error) {
             
-            return { 
-                status: 'error', 
-                message: {text:`Fill operator stopped: ${error}`}
-            };
+            return false;
         }
+        return true;
     }
     
     async execute(): Promise<OperatorResult> {
-        await this.getParameters();
-
+        let result = await this.getParameters();
+        if (!result) {
+            return{ 
+                status: 'error', 
+                message: {text:`Fill operator stopped: Form rejected`}
+            };
+        }
         return new TickChain<undefined, OperatorResult>()
         .first(this.validate.bind(this))
         .finally(this.fill.bind(this))
