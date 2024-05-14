@@ -1,8 +1,10 @@
-import { world, MolangVariableMap, Vector3 } from "@minecraft/server"
+import { world, MolangVariableMap, Vector3, system } from "@minecraft/server"
 import { PlayerSession } from "./session/playerSession";
 
 
 const offset = 0.45;
+const animationSpeed = 5;
+const animationLength = 5;
 
 function getLineMoolang(x:number,y:number,z:number,offset_x:number) :MolangVariableMap{
 
@@ -21,6 +23,13 @@ function spawnLine(coords:Vector3, x:number, y:number, z:number, offset_x:number
     let overworld = world.getDimension("overworld");
     try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(x,y,z,offset_x)); } catch {  }
     try { overworld.spawnParticle("bets:select_line_particle", coords, getLineMoolang(-x,-y,-z,offset_x)); } catch { }
+}
+
+function shouldShowParticle(l:number, x:number, r:number) {
+    if (r-l <=3) return true;
+    if (l === x || r === x) return true;
+    return ((x-l)%animationLength ===0)
+    
 }
 
 export default function renderSelection(session:PlayerSession) {
@@ -98,24 +107,30 @@ export default function renderSelection(session:PlayerSession) {
     cornerMoolang.setFloat("offset_x", 0);
     cornerMoolang.setFloat("offset_y", 0);
     for (let x = x1; x <= x2; x++) {
-        spawnLine( { x: x, y: y1-offset, z: z1-offset },1,0,0,0);
-        spawnLine( { x: x, y: y1-offset, z: z2+offset },1,0,0,0);
-        spawnLine( { x: x, y: y2+offset, z: z1-offset },1,0,0,0);
-        spawnLine( { x: x, y: y2+offset, z: z2+offset },1,0,0,0);
+        if (shouldShowParticle(x1,x,x2)) {
+            spawnLine( { x: x, y: y1-offset, z: z1-offset },1,0,0,0);
+            spawnLine( { x: x, y: y2+offset, z: z2+offset },1,0,0,0);
+            spawnLine( { x: x, y: y1-offset, z: z2+offset },1,0,0,0);
+            spawnLine( { x: x, y: y2+offset, z: z1-offset },1,0,0,0);
+        }
     }
 
     for (let y = y1; y <= y2; y++) {
-        spawnLine({ x: x1-offset, y: y, z: z1-offset }, 1,0,0,16);
-        spawnLine({ x: x1-offset, y: y, z: z2+offset }, 1,0,0,16);
-        spawnLine({ x: x2+offset, y: y, z: z1-offset }, 1,0,0,16);
-        spawnLine({ x: x2+offset, y: y, z: z2+offset }, 1,0,0,16);
+        if (shouldShowParticle(y1,y,y2)) {
+            spawnLine({ x: x1-offset, y: y, z: z1-offset }, 1,0,0,16);
+            spawnLine({ x: x2+offset, y: y, z: z2+offset }, 1,0,0,16);        
+            spawnLine({ x: x1-offset, y: y, z: z2+offset }, 1,0,0,16);
+            spawnLine({ x: x2+offset, y: y, z: z1-offset }, 1,0,0,16);
+        }
     }
 
     for (let z = z1; z <= z2; z++) {
-        spawnLine( { x: x1-offset, y: y1-offset, z: z },0,0,1,0);
-        spawnLine( { x: x2+offset, y: y1-offset, z: z },0,0,1,0);
-        spawnLine( { x: x1-offset, y: y2+offset, z: z },0,0,1,0);
-        spawnLine( { x: x2+offset, y: y2+offset, z: z },0,0,1,0);
+        if (shouldShowParticle(z1,z,z2)) {
+            spawnLine( { x: x1-offset, y: y1-offset, z: z },0,0,1,0);
+            spawnLine( { x: x2+offset, y: y2+offset, z: z },0,0,1,0);
+            spawnLine( { x: x2+offset, y: y1-offset, z: z },0,0,1,0);
+            spawnLine( { x: x1-offset, y: y2+offset, z: z },0,0,1,0);
+        }
     }
     // if ([pos1.x !== pos2.x, pos1.y !== pos2.y, pos1.z !== pos2.z].filter(Boolean).length >= 2) {
     //     // if (pos2.x !== pos1.x) {
