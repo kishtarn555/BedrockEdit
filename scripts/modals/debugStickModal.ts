@@ -51,9 +51,11 @@ export class DebugStickModal {
                 if (typeof currentElement === 'boolean') {
                     result[key] = modalResponse.formValues![index] as boolean;
                 } else if (typeof currentElement === 'string') {
-                    result[key] = modalResponse.formValues![index] as string;
+                    let valid = BlockStates.get(key)?.validValues as string[];
+                    result[key] = valid[modalResponse.formValues![index] as number] as string;
                 }else if (typeof currentElement === 'number') {
-                    result[key] = modalResponse.formValues![index] as number;
+                    let valid = BlockStates.get(key)?.validValues as number[];
+                    result[key] = valid[modalResponse.formValues![index] as number] as number;
                 }
                 index++;
             }
