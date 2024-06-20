@@ -7,6 +7,7 @@ import attachOperatorItemListeners from "./operators/operatorUtil/itemListeners"
 import { getAllPlayerSessions } from "./session/playerSessionRegistry";
 import { attachCommandsListener } from "./console/commands";
 import { registerAllCommands } from "./console/registerCommands";
+import { attachDebugStickItemUse } from "./tools/debug_stick";
 
 const START_TICK = 100;
 
@@ -24,6 +25,7 @@ function mainTick() {
 system.run(mainTick);
 //attachScriptEventsWatcher();
 attachPickerItemUse();
+attachDebugStickItemUse()
 attachWandListener();
 attachOperatorItemListeners();
 attachModalItemUseListeners();

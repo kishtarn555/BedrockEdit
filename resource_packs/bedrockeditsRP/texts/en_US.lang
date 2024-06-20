@@ -10,6 +10,7 @@ bets.operator.flood.item.name=Bets flood
 bets.operator.line.item.name=Bets line
 bets.operator.redo.item.name=Bets redo
 bets.operator.undo.item.name=Bets undo
+bets.tools.debug_stick.item.name=Debug Stick
 bets.tools.picker.blue.item.name=Blue picker (1)
 bets.tools.picker.red.item.name=Red picker (2)
 bets.tools.wand.blue.item.name=Bets blue wand (1)

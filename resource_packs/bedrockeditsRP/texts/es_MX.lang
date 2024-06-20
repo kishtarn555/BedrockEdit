@@ -11,6 +11,7 @@ bets.operator.flood.item.name=Bets relleno por difusión
 bets.operator.line.item.name=Bets línea
 bets.operator.redo.item.name=Bets rehacer
 bets.operator.undo.item.name=Bets deshacer
+bets.tools.debug_stick.item.name=Vara de depuración
 bets.tools.picker.blue.item.name=Bets selector azul (1)
 bets.tools.picker.red.item.name=Bets selector rojo (2)
 bets.tools.wand.blue.item.name=Bets varita azul (1)
