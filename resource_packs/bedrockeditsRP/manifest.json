@@ -4,7 +4,7 @@
         "description": "BedrocKEdits Resource Pack",
         "name": "BedrockEditsResourcePack",
         "uuid": "e81d06a6-3fef-4d2a-82a2-fb4bb7f78ecd",
-        "version": [1, 2, 0],
+        "version": [1, 3, 0],
         "min_engine_version": [1, 20, 30]
     },
     "modules": [
@@ -12,7 +12,7 @@
             "description": "Bedrock Edits Resource Pack",
             "type": "resources",
             "uuid": "af7f6bf0-ea28-420a-8b3c-06700ebeb21e",
-            "version": [1, 2, 0]
+            "version": [1, 3, 0]
         }
     ]
 }
