@@ -1,14 +1,24 @@
-import {world} from "@minecraft/server"
+import {Vector3, world} from "@minecraft/server"
 
 
 const MAX_STRING_BITE=900;
+
+interface dbCompatible {
+    setDynamicProperty(identifier: string, value?: string | number | boolean | Vector3): void;
+    getDynamicProperty(identifier: string): string | number | boolean | Vector3 | undefined;
+  
+}
+
 export namespace db  {
 
-    export function loadString(head:string, defaultValue?:string):string {
+    export function loadString(head:string, defaultValue?:string, target?: dbCompatible):string {
+        if (target == null) {
+            target = world;
+        }
         let itr = 0;
         let response = "";
         while (true) {
-            let current = world.getDynamicProperty(`${head}.${itr}`);
+            let current = target.getDynamicProperty(`${head}.${itr}`);
             itr++;
             if (current == null) break;
             response += current as string;
@@ -20,20 +30,23 @@ export namespace db  {
     }
 
 
-    export function saveString(head:string, message:string) {
+    export function saveString(head:string, message:string, target?: dbCompatible) {
+        if (target == null) {
+            target = world;
+        }
         const pattern = new RegExp(`.{1,${MAX_STRING_BITE}}`,"g");
         const tokens = message.match(pattern)!;
 
         let itr=0;
         for (let token of tokens) {
-            world.setDynamicProperty(`${head}.${itr}`, token);
+            target.setDynamicProperty(`${head}.${itr}`, token);
             itr++;
         }
-        let current = world.getDynamicProperty(`${head}.${itr}`);
+        let current = target.getDynamicProperty(`${head}.${itr}`);
         while (current != null) {
-            world.setDynamicProperty(`${head}.${itr}`, undefined);
+            target.setDynamicProperty(`${head}.${itr}`, undefined);
             itr++;
-            current = world.getDynamicProperty(`${head}.${itr}`);
+            current = target.getDynamicProperty(`${head}.${itr}`);
         }
     }
 }

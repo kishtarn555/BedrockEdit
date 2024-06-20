@@ -49,6 +49,15 @@
 		},
 		"bets_load": {
 			"textures":"textures/items/bets/load"
+		},
+		"bets_state_slot_1": {
+			"textures":"textures/items/bets/state_slot/s1"
+		},
+		"bets_state_slot_2": {
+			"textures":"textures/items/bets/state_slot/s2"
+		},
+		"bets_state_slot_3": {
+			"textures":"textures/items/bets/state_slot/s3"
 		}
 	}
 }

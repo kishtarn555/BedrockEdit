@@ -8,6 +8,7 @@ import { getAllPlayerSessions } from "./session/playerSessionRegistry";
 import { attachCommandsListener } from "./console/commands";
 import { registerAllCommands } from "./console/registerCommands";
 import { attachDebugStickItemUse } from "./tools/debug_stick";
+import { attachStateSlotListener } from "./tools/stateSlot.tool";
 
 const START_TICK = 100;
 
@@ -32,3 +33,4 @@ attachModalItemUseListeners();
 
 registerAllCommands();
 attachCommandsListener();
+attachStateSlotListener();
