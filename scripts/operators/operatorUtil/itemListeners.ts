@@ -10,6 +10,7 @@ import OperatorStack from "../stackOperator";
 import { getPlayerSession } from "../../session/playerSessionRegistry";
 import { OperatorStructureSave } from "../saveOperator";
 import { OperatorStructureLoad } from "../loadOperator";
+import { getBlockFromDirection } from "../../blockUtils";
 
 
 function logOperator(command: string, player: Player, response: OperatorResult) {
@@ -83,9 +84,16 @@ function attachOperatorItemOnBlockListener() {
         let operator: Operator<any>;
         switch (args.itemStack.typeId) {
             case "bets:operator_flood":
+
+                let location = args.block.location;
+
+                if (args.source.isSneaking) {
+                    location = getBlockFromDirection(args.block, args.blockFace)?.location ?? location;
+                }
+
                 operator = new OperatorFlood(
                     args.source,
-                    { dimension: args.source.dimension, location: args.block.location }
+                    { dimension: args.source.dimension, location: location }
                 );
                 break;
             default: return;
