@@ -3,7 +3,9 @@ BedrockEdits is a add on that adds powerfool editing tools for minecraft bedrock
 
 It adds the option to select a workspace, manipulate the workspace with operators, and some more useful tools
 
-# Variables
+# Session
+
+Each player has the following variables in their session. The session is not persistent, meaning, it's lost when the world is closed.
 
 
 | concept | type |description                                                      |
@@ -19,6 +21,8 @@ There are multiple item tools that you can use
 
 * Wands
 * Block picker
+* Debug stick
+* Slot with state
 
 ## Wands
 
@@ -33,13 +37,13 @@ Left click a block to set it as `pos2`(Red corner)
 ### Bets blue wand
 Right click a block to set it as `pos1`(Blue corner)
 
-Left click to place the `pos1`(Blue corner). It places against the clicked block as if it were a block
+Left click to place the `pos1`(Blue corner). It places `pos1` against the clicked block face.
 
 
 ### Bets red wand
 Right click a block to set it as `pos2`(Red corner)
 
-Left click to place the `pos2`(Red corner). It places against the clicked block as if it were a block
+Left click to place the `pos2`(Red corner).  It places `pos2` against the clicked block face.
 
 ## Block pickers
 
@@ -69,8 +73,10 @@ Operators are what apply changes to your world, you can find them as items. To a
 
 Places blocks on all the workspace, respecting the block place mode.
 
+It now prompts you to select the block placing mode.
 
-**_NOTE:_** Batched operator, if the area is large it spreads its operation in batches processed in consecutive ticks. Each batch creates its own commit to the history.
+> **_NOTE:_** Batched operator, if the area is large it spreads its operation in batches processed in consecutive ticks. Each batch creates its own commit to the history.
+
 
 ## Line operator
 
@@ -112,3 +118,121 @@ Use the Redo item.
 Redoes one commit made by an operation. 
 
 This allows Undone commits to be recovered as long as no new commit arrives.
+
+
+# Commands
+
+This tool also provides commands to run, currently their accesible through the scriptevents.
+
+So the syntax is:
+```
+/scriptevent bets:<command> [args]
+```
+### Example
+
+Prints the structure data of "mystructure" in raw format
+```
+/scriptevent bets:stdata mystructure -r
+```
+
+##  Pos Command
+
+Use either `pos1` or `pos2` command to query or modify the selection position box.
+
+#### Arguments
+If no arguments, it returns the position of the selection
+
+* Use optional argument `-set <x y z>` to set the coordinates
+* Use optional argument `-x <dx>` to add dx to the x coordinate
+* Use optional argument `-y <dy>` to add dy to the y coordinate
+* Use optional argument `-z <dz>` to add dz to the z coordinate
+
+#### Examples
+
+Queries pos 1
+```
+/scriptevent bets:pos1
+```
+
+
+Set pos2 to where the player is
+```
+/scriptevent bets:pos2 -set ~ ~ ~ 
+```
+
+Adds 2 to x value pos pos1
+```
+/scriptevent bets:pos1 -x 2
+```
+
+
+##  CLS Command
+
+Use `cls` command to clear the selection
+
+##  SBS Command
+Use `sbs` to query the selection box size. It prints its x, y and z length.
+
+## Fill Command
+
+Use `fill` to run the fill operator
+
+#### Arguments
+
+* Use optional argument `-mode <mode>` to select the mode, skipping the modal.  This modes may be
+  * normal
+  * keep
+  * replace
+  * loosely
+ 
+#### Examples
+
+Runs fill operator, opens the prompt
+```
+/scriptevent bets:fill 
+```
+
+
+Runs fill operator, skips the prompt by specifying the mode
+```
+/scriptevent bets:fill -mode replace
+```
+  
+## Stack Command
+  
+Use `stack` to run the stack operator
+  
+## Undo Command
+  
+Use `undo` to run the undo operator
+  
+## Redo Command
+  
+Use `redo` to run the redo operator
+  
+## Load Command
+  
+Use `load` to run the load operator, and load a structure
+  
+## Save Command
+  
+Use `save` to run the save operator, and save a structure
+  
+## STL Command
+
+Use `stl`  to run to query all structures loaded
+  
+#### Arguments
+  
+* Use flag `-r` to display the data raw.
+
+
+## STDATA Command
+
+Use `stdata <structure>`  to query the data of a specific structure
+  
+#### Arguments
+  
+* Mandatory argument <structure>, the structure name to query
+* Use flag `-r` to display the data raw.
+
