@@ -41,7 +41,7 @@ function copy_behavior_packs() {
 }
 
 function copy_resource_packs() {
-  return gulp.src(["resource_packs/**/*"]).pipe(gulp.dest("build/resource_packs"));
+  return gulp.src(["resource_packs/**/*"], { encoding: false }).pipe(gulp.dest("build/resource_packs"));
 }
 
 const copy_content = gulp.parallel(copy_behavior_packs, copy_resource_packs);
@@ -93,14 +93,16 @@ function clean_localmc(callbackFunction) {
 function deploy_localmc_behavior_packs() {
   console.log("Deploying to '" + mcdir + "development_behavior_packs/" + bpfoldername + "BP'");
   return gulp
-    .src(["build/behavior_packs/" + bpfoldername + "BP/**/*"])
-    .pipe(gulp.dest(mcdir + "development_behavior_packs/" + bpfoldername+"BP"));
+  .src(["build/behavior_packs/" + bpfoldername + "BP/**/*"])
+  .pipe(gulp.dest(mcdir + "development_behavior_packs/" + bpfoldername+"BP"));
 }
 
 function deploy_localmc_resource_packs() {
+  const dir = mcdir + "development_resource_packs/" + bpfoldername+"RP";
+  console.log("Deploying to '" + dir);
   return gulp
-    .src(["build/resource_packs/" + bpfoldername + "RP/**/*"])
-    .pipe(gulp.dest(mcdir + "development_resource_packs/" + bpfoldername+"RP"));
+    .src(["build/resource_packs/" + bpfoldername + "RP/**/*"], { encoding: false })
+    .pipe(gulp.dest(dir));
 }
 
 function getTargetWorldPath() {
