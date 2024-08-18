@@ -5,7 +5,7 @@ import { STACK_COMMAND } from "./operators/stack.command";
 import { LOAD_COMMAND, SAVE_COMMAND, STDATA_COMMAND, STL_COMMAND } from "./operators/structure.command";
 import { CLS_COMMAND, POS1COMMAND, POS2COMMAND, SBS_COMMAND } from "./pos.command";
 import { SEL_COMMAND } from "./sel.command";
-import { BST_COMMAND } from "./stateSlot.command";
+import { BST_COMMAND, GETS_COMMAND } from "./stateSlot.command";
 
 export function registerAllCommands() {
     registerCommand(POS1COMMAND);
@@ -26,6 +26,7 @@ export function registerAllCommands() {
     registerCommand(STDATA_COMMAND);
 
     registerCommand(BST_COMMAND)
+    registerCommand(GETS_COMMAND)
 
 
 }
