@@ -114,7 +114,7 @@ async function pos2exec(
     
     
     if (changed) {
-        selection.setMainAnchor(player.dimension, coords);
+        selection.setSecondaryAnchor(player.dimension, coords);
         
         let position = `§6[  ${coords.x}, ${coords.y}, ${coords.z} ]@${player.dimension.id} §r`
         return {
