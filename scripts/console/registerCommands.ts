@@ -1,4 +1,5 @@
 import { registerCommand } from "./commands";
+import { DEB_COMMNAD } from "./deb.commnad";
 import { FILL_COMMAND } from "./operators/fill.command";
 import { REDO_COMMAND, UNDO_COMMAND } from "./operators/history.command";
 import { STACK_COMMAND } from "./operators/stack.command";
@@ -27,6 +28,8 @@ export function registerAllCommands() {
 
     registerCommand(BST_COMMAND)
     registerCommand(GETS_COMMAND)
+
+    registerCommand(DEB_COMMNAD)
 
 
 }
