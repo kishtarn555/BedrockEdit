@@ -35,7 +35,7 @@ export default class OperatorLine implements Operator<FillParameters> {
     }
 
     private run(): OperatorResult {
-        if (!this.session.hasValidWorkspace()) {
+        if (!this.session.hasValidWorkspace() && false) {
             return {
                 status: "error",
                 message: {text:"Positions are not valid"}
